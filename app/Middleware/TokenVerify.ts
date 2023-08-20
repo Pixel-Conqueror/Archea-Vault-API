@@ -10,7 +10,7 @@ export default class VerifyToken {
       return response.unauthorized('Token manquant')
     }
 
-    const userToken = await Redis.get(`user:${authUser.id}`)
+    const userToken = await Redis.get(`userToken:${authUser.id}`)
 
     if (!userToken || userToken !== token) {
       return response.unauthorized('Token invalide ou expiré')
