@@ -4,6 +4,8 @@ services:
   postgres:
     container_name: postgres
     image: postgres:13
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
     volumes:
       - postgres_volume:/var/lib/postgresql/data
       - ./dockerConfig/postgres-dev-init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -12,16 +14,32 @@ services:
 
   redis:
     container_name: redis
-    image: redis:6.2.13-alpine
+    image: redis:latest
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     environment:
-      - REDIS_PASSWORD=pixelconqueror2023
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
       - redis_volume:/data
     ports:
       - 6379:6379
 
-  adonis_app:
-    container_name: adonis_app
+  bullboard:
+    container_name: bullboard
+    image: deadly0/bull-board
+    restart: always
+    ports:
+      - 3000:3000
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_USE_TLS=false
+      - BULL_PREFIX=bull
+    depends_on:
+      - redis
+
+  adonis_api:
+    container_name: api
     restart: always
     depends_on:
       - postgres
@@ -37,11 +55,12 @@ services:
     environment:
       - PG_HOST=postgres
       - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     volumes:
       - ./:/home/node/app
       # Uncomment the below line if you developing on MacOS
       - /home/node/app/node_modules
-    command: dumb-init node ace serve --watch --node-args="--inspect=0.0.0.0"
+    command: dumb-init sh -c "node ace serve --watch --node-args='--inspect=0.0.0.0'"
 
 volumes:
   postgres_volume:
