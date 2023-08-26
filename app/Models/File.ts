@@ -19,10 +19,18 @@ export default class File extends BaseModel {
   @column()
   public size: number
 
-  @column.dateTime({ autoCreate: true })
+  @column()
+  public path: string
+
+  @column.dateTime({ autoCreate: true, serialize: (value: DateTime) => value.toISODate() })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serialize: (value: DateTime) => value.toISODate(),
+  })
+
   public updatedAt: DateTime
 
   @belongsTo(() => User)

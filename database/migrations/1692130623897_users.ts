@@ -12,7 +12,7 @@ export default class extends BaseSchema {
       table.string('last_name', 255).notNullable()
       table.smallint('role').notNullable().defaultTo(0)
       table.boolean('is_email_verified').notNullable().defaultTo(0)
-      table.string('remember_me_token').nullable()
+      table.bigint('storage_capacity').notNullable().defaultTo(0)
 
       /**
        * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL

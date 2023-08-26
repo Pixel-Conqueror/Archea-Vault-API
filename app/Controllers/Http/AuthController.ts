@@ -1,4 +1,3 @@
-import Redis from '@ioc:Adonis/Addons/Redis'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import AuthValidator from 'App/Validators/AuthValidator'
@@ -12,7 +11,7 @@ export default class AuthController {
 
       return user
     } catch (error) {
-      return response.badRequest(error.messages)
+      return response.badRequest({ message: error.messages, error: error })
     }
   }
 
@@ -20,8 +19,6 @@ export default class AuthController {
     try {
       const { email, password } = await request.validate(AuthValidator)
       const datas = await auth.use('api').attempt(email, password, { expiresIn: '1 days' })
-
-      await Redis.set(`userToken:${datas.user.id}`, datas.token, 'EX', 3600) // Expiration en secondes (1 heure)
 
       return response.ok({ token: datas.token, user: datas.user })
     } catch (error) {
@@ -36,40 +33,17 @@ export default class AuthController {
         default:
           message = 'Unable to login'
       }
-      return response.unauthorized(message)
+      return response.unauthorized({ message: message, error: error })
     }
   }
 
   public async logout({ auth, response }: HttpContextContract) {
     try {
-      if (!auth.user) {
-        return response.badRequest({ error: 'You are not logged in' })
-      }
-
-      const userToken = await Redis.get(`user:${auth.user.id}`) // Récupère le token de Redis
-
-      if (userToken) {
-        // Suppression de la clé associée au token dans Redis
-        await Redis.del(`userToken:${auth.user.id}`)
-      }
-
-      await auth.use('api').revoke() // Révoque le token avec Adonis
+      await auth.use('api').revoke()
 
       return response.ok({ revoked: true })
     } catch (error) {
-      return response.badRequest(error.messages)
-    }
-  }
-
-  public async isAuthenticated({ auth, response }: HttpContextContract) {
-    try {
-      if (!auth.user) {
-        return response.badRequest({ error: 'You are not logged in' })
-      }
-
-      return response.ok({ authenticated: true })
-    } catch (error) {
-      return response.badRequest(error.messages)
+      return response.badRequest({ message: error.messages, error: error })
     }
   }
 }
