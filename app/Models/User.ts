@@ -27,17 +27,26 @@ export default class User extends BaseModel {
   public role: number = 0
 
   @column()
-  public rememberMeToken: string | null
+  public storageCapacity: number = 0
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serialize: (value: DateTime) => value.toISODate() })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serialize: (value: DateTime) => value.toISODate(),
+  })
   public updatedAt: DateTime
 
   @computed()
   public get fullName() {
     return `${this.firstName} ${this.lastName}`
+  }
+
+  @computed()
+  public get storageCapacityInGB() {
+    return this.storageCapacity / (1024 * 1024 * 1024)
   }
 
   @hasMany(() => File)
