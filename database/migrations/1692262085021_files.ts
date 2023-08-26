@@ -11,6 +11,7 @@ export default class extends BaseSchema {
       table.string('type').notNullable()
       table.bigint('size').notNullable()
       table.string('path').notNullable()
+
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

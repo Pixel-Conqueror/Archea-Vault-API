@@ -30,6 +30,7 @@ export default class File extends BaseModel {
     autoUpdate: true,
     serialize: (value: DateTime) => value.toISODate(),
   })
+
   public updatedAt: DateTime
 
   @belongsTo(() => User)
