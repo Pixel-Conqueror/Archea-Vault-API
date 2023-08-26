@@ -24,5 +24,7 @@ Server.middleware.register([() => import('@ioc:Adonis/Core/BodyParser')])
 
 Server.middleware.registerNamed({
   auth: () => import('App/Middleware/Auth'),
-  token: () => import('App/Middleware/TokenVerify'),
+  silentAuth: () => import('App/Middleware/SilentAuth'),
+  fileAccess: () => import('App/Middleware/VerifyFileAccess'),
+  storageCapacity: () => import('App/Middleware/VerifyStorageCapacity'),
 })

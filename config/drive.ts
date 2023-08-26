@@ -42,7 +42,7 @@ export default driveConfig({
     */
     local: {
       driver: 'local',
-      visibility: 'public',
+      visibility: 'private',
 
       /*
       |--------------------------------------------------------------------------
@@ -77,7 +77,7 @@ export default driveConfig({
       | you are not registering routes with this prefix.
       |
       */
-      basePath: '/uploads',
+      basePath: 'uploads',
     },
 
     /*

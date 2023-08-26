@@ -21,7 +21,7 @@ export default class AuthController {
       const { email, password } = await request.validate(AuthValidator)
       const datas = await auth.use('api').attempt(email, password, { expiresIn: '1 days' })
 
-      await Redis.set(`user:${datas.user.id}`, datas.token, 'EX', 3600) // Expiration en secondes (1 heure)
+      await Redis.set(`userToken:${datas.user.id}`, datas.token, 'EX', 3600) // Expiration en secondes (1 heure)
 
       return response.ok({ token: datas.token, user: datas.user })
     } catch (error) {
@@ -50,7 +50,7 @@ export default class AuthController {
 
       if (userToken) {
         // Suppression de la clé associée au token dans Redis
-        await Redis.del(`user:${auth.user.id}`)
+        await Redis.del(`userToken:${auth.user.id}`)
       }
 
       await auth.use('api').revoke() // Révoque le token avec Adonis
