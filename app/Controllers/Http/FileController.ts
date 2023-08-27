@@ -3,6 +3,7 @@ import Bull from '@ioc:Rocketseat/Bull'
 import Drive from '@ioc:Adonis/Core/Drive'
 import File from 'App/Models/File'
 import UploadFile from 'App/Jobs/UploadFile'
+import FileUpdateValidator from 'App/Validators/FileUpdateValidator'
 
 export default class FileController {
   public async index({ auth, response }: HttpContextContract) {
@@ -22,8 +23,7 @@ export default class FileController {
 
   public async update({ request, response }: HttpContextContract) {
     try {
-      const { fileId, name } = request.body()
-
+      const { fileId, name } = await request.validate(FileUpdateValidator)
       const file = await File.findOrFail(fileId)
 
       file.name = name

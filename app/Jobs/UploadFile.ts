@@ -13,21 +13,18 @@ export default class UploadFile implements JobContract {
 
   public async handle(datas: any) {
     const { userId, file, tmpPath } = datas.data
-
     try {
       // Enregistrez les informations du fichier dans la base de données
       const dbFile = await File.create({
         userId,
-        name: file.clientName,
+        name: file.clientName.replace(/\.[^/.]+$/, ''),
         type: file.extname,
         size: file.size,
         path: '',
       })
 
-      // Lecture du fichier sous forme de buffer
       const buffer = await fs.readFile(tmpPath)
 
-      // Enregistrez le fichier dans le dossier de l'utilisateur avec le nom UUID + format
       const filePath = `${userId}/${dbFile.id}.${dbFile.type}`
       try {
         await Drive.put(filePath, buffer)
@@ -39,7 +36,9 @@ export default class UploadFile implements JobContract {
         dbFile.delete()
       }
 
-      Logger.info(`Fichier ${dbFile.name} enregistré pour l'utilisateur ${userId}`)
+      Logger.info(
+        `Fichier ${dbFile.name} au format .${dbFile.type} enregistré pour l'utilisateur ${userId}`
+      )
     } catch (error) {
       Logger.info(error)
     }
