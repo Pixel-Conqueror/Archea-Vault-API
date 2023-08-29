@@ -1,42 +1,42 @@
-import { DateTime } from 'luxon'
-import { v4 as uuidv4 } from 'uuid'
-import { BaseModel, BelongsTo, belongsTo, computed, column } from '@ioc:Adonis/Lucid/Orm'
-import User from './User'
+import { DateTime } from 'luxon';
+import { v4 as uuidv4 } from 'uuid';
+import { BaseModel, BelongsTo, belongsTo, computed, column } from '@ioc:Adonis/Lucid/Orm';
+import User from './User';
 
 export default class File extends BaseModel {
-  @column({ isPrimary: true, serialize: (value: string) => value })
-  public id: string = uuidv4()
+	@column({ isPrimary: true, serialize: (value: string) => value })
+	public id: string = uuidv4();
 
-  @column()
-  public userId: string = uuidv4()
+	@column()
+	public userId: string = uuidv4();
 
-  @column()
-  public name: string
+	@column()
+	public name: string;
 
-  @column()
-  public type: string
+	@column()
+	public type: string;
 
-  @column()
-  public size: number
+	@column()
+	public size: number;
 
-  @column()
-  public path: string
+	@column()
+	public path: string;
 
-  @column.dateTime({ autoCreate: true, serialize: (value: DateTime) => value.toISODate() })
-  public createdAt: DateTime
+	@column.dateTime({ autoCreate: true, serialize: (value: DateTime) => value.toISODate() })
+	public createdAt: DateTime;
 
-  @column.dateTime({
-    autoCreate: true,
-    autoUpdate: true,
-    serialize: (value: DateTime) => value.toISODate(),
-  })
-  public updatedAt: DateTime
+	@column.dateTime({
+		autoCreate: true,
+		autoUpdate: true,
+		serialize: (value: DateTime) => value.toISODate(),
+	})
+	public updatedAt: DateTime;
 
-  @belongsTo(() => User)
-  public user: BelongsTo<typeof User>
+	@belongsTo(() => User)
+	public user: BelongsTo<typeof User>;
 
-  @computed()
-  public get fileName() {
-    return `${this.name}.${this.type}`
-  }
+	@computed()
+	public get fileName() {
+		return `${this.name}.${this.type}`;
+	}
 }

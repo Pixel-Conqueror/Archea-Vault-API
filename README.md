@@ -57,10 +57,10 @@ _/register_
 
 ```json
 {
-  "first_name": "string",
-  "last_name": "string",
-  "email": "string",
-  "password": "string"
+	"first_name": "string",
+	"last_name": "string",
+	"email": "string",
+	"password": "string"
 }
 ```
 
@@ -68,11 +68,13 @@ _/login_
 
 ```json
 {
-  "email": "string",
-  "password": "string"
+	"email": "string",
+	"password": "string"
 }
 ```
-___
+
+---
+
 #### Files
 
 |                    Type                    | Url                     | Middleware(s)         |
@@ -88,7 +90,7 @@ _/fileDownload/:fileId_
 
 ```json
 {
-  "fileId": "string"
+	"fileId": "string"
 }
 ```
 
@@ -97,7 +99,7 @@ _/fileUpload_
 
 ```json
 {
-  "files": "array of files"
+	"files": "array of files"
 }
 ```
 
@@ -105,29 +107,33 @@ _/fileUpdate_
 
 ```json
 {
-  "fileId": "string",
-  "name": "string",
+	"fileId": "string",
+	"name": "string"
 }
 ```
+
 _/fileDelete_
 
 ```json
 {
-  "fileId": "string"
+	"fileId": "string"
 }
 ```
-___
+
+---
+
 #### Monitoring
 
 |                  Type                   | Url       | Middleware(s) |
 | :-------------------------------------: | :-------- | :------------ |
 | <span style="color: #26B260">GET</span> | _/health_ | None          |
 
-___
+---
 
 ## Middlewares
 
 #### Auth
+
 Ensures the protection and authentication of resources by verifying the provided credentials in the HTTP authorization header. This ensures that only authenticated users can access the secured parts of the application.
 
 ```
@@ -135,9 +141,11 @@ Authorization: Bearer <token>
 ```
 
 #### StorageCapacity
+
 Ensures that the user does not exceed the storage capacity allocated to him.
 
 #### FileAccess
+
 Ensures that the user has access to the requested resource.
 
 ---
