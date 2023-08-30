@@ -1,9 +1,10 @@
 import { Link } from '@inertiajs/inertia-react';
+import styles from './navbar.module.scss';
 
 export default function Navbar() {
 	return (
-		<nav>
-			<ul>
+		<nav className={styles['navbar']}>
+			<ul className={styles['block']}>
 				<li>
 					<Link href="/">Archea Vault</Link>
 				</li>
@@ -11,7 +12,7 @@ export default function Navbar() {
 					<Link href="/cloud-space">Mon cloud</Link>
 				</li>
 			</ul>
-			<ul>
+			<ul className={styles['block']}>
 				<li>
 					<Link href="/login">Login</Link>
 				</li>

@@ -52,6 +52,7 @@ services:
     ports:
       - 3333:3333
       - 9229:9229
+      - 8080:8080
     env_file:
       - .env
     environment:
@@ -62,7 +63,7 @@ services:
       - ./:/home/node/app
       # Uncomment the below line if you developing on MacOS
       - /home/node/app/node_modules
-    command: dumb-init sh -c "node ace serve --watch --node-args='--inspect=0.0.0.0'"
+    command: dumb-init node ace serve --watch --encore-args="--host ${HOST} --port 8080 --public 127.0.0.1:8080"
 
 volumes:
   postgres_volume:

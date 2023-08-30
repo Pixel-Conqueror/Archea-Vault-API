@@ -81,7 +81,7 @@ Encore.cleanupOutputBeforeBuild();
 | Enable assets versioning to leverage lifetime browser and CDN cache
 |
 */
-Encore.enableVersioning(Encore.isProduction());
+// Encore.enableVersioning(Encore.isProduction());
 
 /*
 |--------------------------------------------------------------------------
