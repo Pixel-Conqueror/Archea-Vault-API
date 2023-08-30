@@ -1,7 +1,10 @@
-const { join } = require('path');
+const { join, resolve } = require('path');
 const Encore = require('@symfony/webpack-encore');
+const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 Encore.enableTypeScriptLoader();
+Encore.enableSassLoader();
+Encore.enableReactPreset();
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +50,7 @@ Encore.setPublicPath('/assets');
 | entrypoints.
 |
 */
-Encore.addEntry('app', './resources/js/app.js');
+Encore.addEntry('app', './resources/app.js');
 
 /*
 |--------------------------------------------------------------------------
@@ -171,8 +174,18 @@ Encore.configureDevServerOptions((options) => {
 | PostCSS or CSS.
 |
 */
-// Encore.enablePostCssLoader()
-// Encore.configureCssLoader(() => {})
+Encore.enablePostCssLoader((options) => {
+	options.postcssOptions = {
+		config: resolve(__dirname, 'postcss.config.js'),
+	};
+});
+Encore.configureCssLoader((options) => {
+	options.modules = {
+		auto: /\.module\.\w+$/i,
+	};
+	options.importLoaders = 2;
+	return options;
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -204,6 +217,7 @@ config.infrastructureLogging = {
 	level: 'warn',
 };
 config.stats = 'errors-warnings';
+config.resolve.plugins = [new TSConfigPathsPlugin()];
 
 /*
 |--------------------------------------------------------------------------

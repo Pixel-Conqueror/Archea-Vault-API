@@ -1,0 +1,44 @@
+@import "Styles/colors.scss";
+
+input {
+	width: 100%;
+	color: $lightest-blue;
+	background-color: transparent;
+	padding: 1em 0.5em;
+	border: 0;
+	border-bottom: 1px solid $lightest-blue;
+
+	&::placeholder {
+		color: rgba($color: $lightest-blue, $alpha: 0.4);
+	}
+}
+
+button {
+	height: 35px;
+	min-width: 165px;
+	color: $lightest-blue;
+	background-color: $dark-blue;
+	padding: 0 0.5em;
+	border: 0;
+	border-radius: 3px;
+}
+
+.divider {
+	position: relative;
+	width: 100%;
+	border: 1px solid $lightest-blue;
+	border-radius: 10px;
+
+	& > span {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		color: $darkest-blue;
+		padding: 0.25em 0.75em;
+		text-transform: uppercase;
+		border-radius: 10px;
+		font-size: 0.85em;
+		background-color: $lightest-blue;
+		transform: translate(-50%, -50%);
+	}
+}

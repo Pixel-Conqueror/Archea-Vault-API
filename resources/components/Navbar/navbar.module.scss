@@ -1,0 +1,27 @@
+.navbar {
+	width: 100%;
+	background-color: #576490;
+	padding: 1em;
+	border-radius: 3px;
+	display: flex;
+	gap: 1em;
+	align-items: center;
+	justify-content: space-between;
+
+	& .block {
+		display: flex;
+		gap: 0.5em;
+		align-items: center;
+		justify-content: center;
+
+		// TODO: put in file index.scss
+		& a {
+			color: #fbfcfc;
+
+			&:hover {
+				color: #6fd7ff;
+				border-bottom: 1px solid #6fd7ff;
+			}
+		}
+	}
+}

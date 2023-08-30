@@ -1,12 +1,12 @@
 import HealthCheck from '@ioc:Adonis/Core/HealthCheck';
 import Route from '@ioc:Adonis/Core/Route';
 
-Route.get('/', async () => {
-	return { hello: 'world' };
+Route.get('/', async ({ inertia }) => {
+	return inertia.render('Home', { test: 'yes' });
 });
 
-Route.get('/home', async ({ inertia }) => {
-	return inertia.render('Home');
+Route.get('/cloud-space', async ({ inertia }) => {
+	return inertia.render('CloudSpace');
 });
 
 //Authentication

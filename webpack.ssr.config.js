@@ -1,7 +1,10 @@
-const { join } = require('path');
+const { join, resolve } = require('path');
 const Encore = require('@symfony/webpack-encore');
+const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 Encore.enableTypeScriptLoader();
+Encore.enableSassLoader();
+Encore.enableReactPreset();
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +50,7 @@ Encore.setPublicPath('/ssr');
 | entrypoints.
 |
 */
-Encore.addEntry('ssr', './resources/js/ssr.js');
+Encore.addEntry('ssr', './resources/ssr.js');
 
 /*
 |--------------------------------------------------------------------------
@@ -132,8 +135,18 @@ Encore.configureDevServerOptions((options) => {
 | PostCSS or CSS.
 |
 */
-// Encore.enablePostCssLoader()
-// Encore.configureCssLoader(() => {})
+Encore.enablePostCssLoader((options) => {
+	options.postcssOptions = {
+		config: resolve(__dirname, 'postcss.config.js'),
+	};
+});
+Encore.configureCssLoader((options) => {
+	options.modules = {
+		auto: /\.module\.\w+$/i,
+	};
+	options.importLoaders = 2;
+	return options;
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -172,14 +185,21 @@ config.stats = 'errors-warnings';
 |--------------------------------------------------------------------------
 |
 */
-config.externals = [require('webpack-node-externals')()];
+const externals = require('webpack-node-externals');
+config.externals = [
+	externals({
+		allowlist: ['@inertiajs/core', '@inertiajs/react'],
+	}),
+];
 config.externalsPresets = { node: true };
 config.output = {
 	libraryTarget: 'commonjs2',
 	filename: 'ssr.js',
 	path: join(__dirname, './inertia/ssr'),
+	publicPath: '/ssr/',
 };
-config.experiments = { outputModule: true };
+config.experiments = { outputModule: false };
+config.resolve.plugins = [new TSConfigPathsPlugin()];
 
 /*
 |--------------------------------------------------------------------------

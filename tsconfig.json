@@ -1,17 +1,32 @@
 {
 	"extends": "adonis-preset-ts/tsconfig.json",
 	"include": ["**/*"],
-	"exclude": ["node_modules", "build"],
+	"exclude": ["node_modules", "build", "inertia"],
 	"compilerOptions": {
+		"lib": ["dom", "dom.iterable"],
+		"allowJs": true,
+		"skipLibCheck": true,
+		"strict": false,
+		"forceConsistentCasingInFileNames": true,
+		"esModuleInterop": true,
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"incremental": true,
 		"outDir": "build",
 		"rootDir": "./",
+		"baseUrl": "./",
 		"sourceMap": true,
 		"jsx": "react-jsx",
 		"paths": {
 			"App/*": ["./app/*"],
 			"Config/*": ["./config/*"],
 			"Contracts/*": ["./contracts/*"],
-			"Database/*": ["./database/*"]
+			"Database/*": ["./database/*"],
+			"Components/*": ["./resources/components/*"],
+			"Styles/*": ["./resources/styles/*"],
+			"Assets/*": ["./resources/assets/*"],
+			"Types/*": ["./resources/types/*"],
+			"Utils/*": ["./resources/utils/*"]
 		},
 		"types": [
 			"@adonisjs/core",
