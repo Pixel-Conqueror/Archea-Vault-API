@@ -1,0 +1,110 @@
+@import url("https://fonts.googleapis.com/css2?family=Arsenal:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import "Styles/colors.scss";
+
+* {
+	box-sizing: border-box;
+	outline: 0;
+	margin: 0;
+	padding: 0;
+}
+
+html,
+body {
+	height: 100dvh;
+	width: 100dvw;
+	color: $lightest-blue;
+	background-color: $darkest-blue;
+	font-family: "Arsenal", sans-serif;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+}
+
+#root {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+a:not(.reset) {
+	width: fit-content;
+	color: $white;
+	border-bottom: 1px solid transparent;
+	text-decoration: none;
+	transition: 0.15s;
+
+	&:hover,
+	&:focus {
+		border-bottom: 1px solid inherit;
+	}
+}
+
+ul,
+li {
+	list-style: none;
+}
+
+/* width */
+::-webkit-scrollbar {
+	height: 0.45em;
+	width: 0.45em;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	border-radius: 2px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #6fd7ff;
+	border-radius: 2px;
+
+	&:hover {
+		background: $dark-blue;
+	}
+}
+
+table {
+	width: 100%;
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	caption-side: bottom;
+
+	& td,
+	& th {
+		border-top: 1px solid $dark-blue;
+		border-bottom: 1px solid $dark-blue;
+		text-align: left;
+		padding: 0.5em;
+		text-align: center;
+		transition: 0.075s;
+	}
+
+	& tr {
+		transition: 0.075s;
+
+		&:hover {
+			outline: 1px solid $white;
+			background-color: $dark-blue;
+		}
+	}
+
+	& caption {
+		width: 100%;
+		font-size: 0.85em;
+		text-align: left;
+		text-transform: uppercase;
+		padding: 0.5em 0;
+	}
+}
+
+.reset {
+	background-color: inherit;
+	color: inherit;
+	padding: 0;
+	margin: 0;
+	border: 0;
+}

@@ -1,0 +1,51 @@
+@import "Styles/colors.scss";
+
+.sidebar {
+	background-color: $dark-blue;
+	padding: 1.5em;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+
+	& h1.brand {
+		text-align: center;
+		margin-bottom: 1em;
+	}
+
+	& .caption {
+		margin-bottom: 0.5em;
+	}
+
+	& nav {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+	}
+}
+
+.items {
+	margin-bottom: 1em;
+	display: flex;
+	flex-direction: column;
+
+	& .item {
+		border-radius: 3px;
+
+		&.active {
+			background-color: $darkest-blue;
+		}
+
+		& a {
+			width: 100%;
+			padding: 0.5em 1em;
+			display: flex;
+			gap: 0.5em;
+			align-items: center;
+		}
+	}
+}
+
+.storage-used {
+	display: flex;
+	flex-direction: column;
+}

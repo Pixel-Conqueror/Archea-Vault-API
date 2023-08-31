@@ -1,5 +1,5 @@
-import Env from '@ioc:Adonis/Core/Env'
-import { BullConfig } from '@ioc:Rocketseat/Bull'
+import Env from '@ioc:Adonis/Core/Env';
+import { BullConfig } from '@ioc:Rocketseat/Bull';
 
 /*
 |--------------------------------------------------------------------------
@@ -16,15 +16,15 @@ import { BullConfig } from '@ioc:Rocketseat/Bull'
 */
 
 const bullConfig: BullConfig = {
-  connection: Env.get('BULL_CONNECTION', 'local'),
+	connection: Env.get('BULL_CONNECTION', 'local'),
 
-  connections: {
-    local: {
-      host: Env.get('REDIS_HOST'),
-      port: Env.get('REDIS_PORT'),
-      password: Env.get('REDIS_PASSWORD'),
-    },
-  },
-}
+	connections: {
+		local: {
+			host: Env.get('REDIS_HOST'),
+			port: Env.get('REDIS_PORT'),
+			password: Env.get('REDIS_PASSWORD'),
+		},
+	},
+};
 
-export default bullConfig
+export default bullConfig;

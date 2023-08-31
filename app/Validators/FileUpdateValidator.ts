@@ -1,27 +1,27 @@
-import { schema, rules, CustomMessages } from '@ioc:Adonis/Core/Validator'
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { schema, rules, CustomMessages } from '@ioc:Adonis/Core/Validator';
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 
 export default class FileUpdateValidator {
-  constructor(protected ctx: HttpContextContract) {}
+	constructor(protected ctx: HttpContextContract) {}
 
-  public schema = schema.create({
-    fileId: schema.string({ trim: true }, [rules.required()]),
-    name: schema.string({ trim: true }, [rules.required()]),
-  })
+	public schema = schema.create({
+		fileId: schema.string({ trim: true }, [rules.required()]),
+		name: schema.string({ trim: true }, [rules.required()]),
+	});
 
-  /**
-   * Custom messages for validation failures. You can make use of dot notation `(.)`
-   * for targeting nested fields and array expressions `(*)` for targeting all
-   * children of an array. For example:
-   *
-   * {
-   *   'profile.username.required': 'Username is required',
-   *   'scores.*.number': 'Define scores as valid numbers'
-   * }
-   *
-   */
-  public messages: CustomMessages = {
-    'fileId.required': 'File id is required',
-    'name.required': 'Name is required',
-  }
+	/**
+	 * Custom messages for validation failures. You can make use of dot notation `(.)`
+	 * for targeting nested fields and array expressions `(*)` for targeting all
+	 * children of an array. For example:
+	 *
+	 * {
+	 *   'profile.username.required': 'Username is required',
+	 *   'scores.*.number': 'Define scores as valid numbers'
+	 * }
+	 *
+	 */
+	public messages: CustomMessages = {
+		'fileId.required': 'File id is required',
+		'name.required': 'Name is required',
+	};
 }

@@ -1,3 +1,3 @@
-const jobs = ['App/Jobs/UploadFile']
+const jobs = ['App/Jobs/UploadFile'];
 
-export default jobs
+export default jobs;
