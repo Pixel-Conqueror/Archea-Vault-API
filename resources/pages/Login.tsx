@@ -5,11 +5,12 @@ import AuthForm from 'Components/Auth/AuthForm';
 import BaseLayout from 'Components/Layouts/BaseLayout';
 
 import { FormAuthField } from 'Types/AuthForm';
-import { makeRequest } from 'Utils/request';
 
 import styles from 'Styles/auth.module.scss';
+import { Inertia } from '@inertiajs/inertia';
 
-export default function LoginPage() {
+export default function LoginPage(...args) {
+	console.log(args);
 	const fields: Array<FormAuthField> = [
 		{
 			name: 'email',
@@ -25,8 +26,7 @@ export default function LoginPage() {
 		},
 	];
 
-	// TODO: ajouter vérification type input via zod ou yup
-	const handleLogin = async (fields: { id: string; value: string }[]) => {
+	const handleSubmit = async (fields: { id: string; value: string }[]) => {
 		const areFieldsOk = fields.reduce((acc, cur) => {
 			if (cur.value.trim().length === 0) {
 				acc = false;
@@ -38,13 +38,13 @@ export default function LoginPage() {
 			return alert('Please fill all inputs');
 		}
 
-		const email = fields.find(({ id }) => id === 'email')?.value;
-		const password = fields.find(({ id }) => id === 'password')?.value;
+		const email = fields.find(({ id }) => id === 'email')?.value || '';
+		const password = fields.find(({ id }) => id === 'password')?.value || '';
 
 		try {
-			const data = await makeRequest({
-				url: '/login',
-				body: { email, password },
+			const data = await Inertia.post('/login', {
+				email,
+				password,
 			});
 			console.log(data);
 		} catch (error) {
@@ -55,7 +55,7 @@ export default function LoginPage() {
 	return (
 		<BaseLayout className={styles['auth-page']} childrenClassName={styles['auth-form-wrapper']}>
 			<img src={VaultImg} alt="Vault side-image" className={styles['side-image']} />
-			<AuthForm type="login" fields={fields} onSubmit={handleLogin} />
+			<AuthForm type="login" fields={fields} onSubmit={handleSubmit} />
 		</BaseLayout>
 	);
 }

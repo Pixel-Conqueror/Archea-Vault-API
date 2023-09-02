@@ -1,10 +1,10 @@
-import { Link } from '@inertiajs/inertia-react';
-import { motion } from 'framer-motion';
+import { Link, usePage } from '@inertiajs/inertia-react';
 import { ChangeEvent, FormEvent } from 'react';
 
 import { FormAuthField } from 'Types/AuthForm';
 
 import styles from 'Styles/auth.module.scss';
+import { InertiaPage } from 'Types/inertia';
 
 interface AuthFormProps {
 	fields: Array<FormAuthField>;
@@ -13,6 +13,8 @@ interface AuthFormProps {
 	onInputChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 export default function AuthForm({ fields, type, onSubmit, onInputChange }: AuthFormProps) {
+	const { errors } = usePage<InertiaPage>().props;
+
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const formData = new FormData(event.target as HTMLFormElement);
@@ -32,14 +34,14 @@ export default function AuthForm({ fields, type, onSubmit, onInputChange }: Auth
 	return (
 		<form className={styles['auth-form']} onSubmit={handleSubmit}>
 			<h1>{type === 'login' ? 'Connexion' : 'Inscription'}</h1>
-			{fields.map(({ name, label, type, placeholder }, index) => (
-				<motion.div
+			{fields.map(({ name, label, type, placeholder }) => (
+				<div
 					className={styles['field']}
-					initial={{ x: -30, opacity: 0 }}
-					animate={{ x: 0, opacity: 1 }}
-					transition={{
-						delay: index * 0.1,
-					}}
+					// initial={{ x: -30, opacity: 0 }}
+					// animate={{ x: 0, opacity: 1 }}
+					// transition={{
+					// 	delay: index * 0.1,
+					// }}
 					key={name}
 				>
 					<label htmlFor={name}>{label}</label>
@@ -50,7 +52,12 @@ export default function AuthForm({ fields, type, onSubmit, onInputChange }: Auth
 						name={name}
 						id={name}
 					/>
-				</motion.div>
+					{errors?.[name] && (
+						<div className="legend" style={{ color: 'red' }}>
+							{errors[name]}
+						</div>
+					)}
+				</div>
 			))}
 			<div className={styles['field']}>
 				<button>{type === 'login' ? 'Se connecter' : "S'inscrire"}</button>
