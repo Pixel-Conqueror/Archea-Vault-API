@@ -23,7 +23,11 @@ export default function BaseLayout({
 			// 	stiffness: 260,
 			// 	damping: 20,
 			// }}
-			style={style}
+			style={{
+				...style,
+				width: '100%',
+				height: '100%',
+			}}
 		>
 			<Navbar />
 			<main className={childrenClassName}>{children}</main>

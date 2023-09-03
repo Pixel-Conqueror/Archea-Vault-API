@@ -1,10 +1,10 @@
+import { BsSearch } from 'react-icons/bs';
 import styles from './searchbar.module.scss';
-console.log(styles);
 
 export default function SearchBar() {
 	return (
 		<div className={styles['searchbar']}>
-			<input type="text" placeholder="Rechercher" name="searchbar" id="searchbar" />
+			<BsSearch /> <input type="text" placeholder="Search" name="searchbar" id="searchbar" />
 		</div>
 	);
 }

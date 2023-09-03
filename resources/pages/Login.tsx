@@ -16,13 +16,13 @@ export default function LoginPage(...args) {
 			name: 'email',
 			label: 'Email',
 			type: 'email',
-			placeholder: 'Votre adresse email',
+			placeholder: 'Your email address',
 		},
 		{
 			name: 'password',
-			label: 'Mot de passe',
+			label: 'Password',
 			type: 'password',
-			placeholder: 'Votre mot de passe',
+			placeholder: 'Your password',
 		},
 	];
 
@@ -48,10 +48,12 @@ export default function LoginPage(...args) {
 			});
 			console.log(data);
 		} catch (error) {
-			alert(error?.error || 'Une erreur est survenue');
+			alert(error?.error || 'Something went wrong');
 		}
 	};
 
+	// TODO: remove layout and put background image
+	// and move vault image to AuthForm component
 	return (
 		<BaseLayout className={styles['auth-page']} childrenClassName={styles['auth-form-wrapper']}>
 			<img src={VaultImg} alt="Vault side-image" className={styles['side-image']} />

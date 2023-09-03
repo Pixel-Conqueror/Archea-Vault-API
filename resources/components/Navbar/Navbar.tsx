@@ -12,7 +12,7 @@ export default function Navbar() {
 				</li>
 				{auth.isAuthenticated && (
 					<li>
-						<Link href="/cloud-space">Mon cloud</Link>
+						<Link href="/cloud-space">Cloud space</Link>
 					</li>
 				)}
 			</ul>

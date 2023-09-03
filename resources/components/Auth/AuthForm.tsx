@@ -33,7 +33,7 @@ export default function AuthForm({ fields, type, onSubmit, onInputChange }: Auth
 
 	return (
 		<form className={styles['auth-form']} onSubmit={handleSubmit}>
-			<h1>{type === 'login' ? 'Connexion' : 'Inscription'}</h1>
+			<h1>{type === 'login' ? 'Connection' : 'Register'}</h1>
 			{fields.map(({ name, label, type, placeholder }) => (
 				<div
 					className={styles['field']}
@@ -60,23 +60,19 @@ export default function AuthForm({ fields, type, onSubmit, onInputChange }: Auth
 				</div>
 			))}
 			<div className={styles['field']}>
-				<button>{type === 'login' ? 'Se connecter' : "S'inscrire"}</button>
+				<button>{type === 'login' ? 'Sign in' : 'Register'}</button>
 			</div>
 			<div className={`${styles['field']} ${styles['inline']}`}>
 				{type === 'login' ? (
 					<>
-						Pas encore de compte ? <Link href="/register">Inscrivez-vous</Link>
+						Don't have an account yet? <Link href="/register">Register now</Link>
 					</>
 				) : (
 					<>
-						Déjà inscrit ? <Link href="/login">Connectez-vous</Link>
+						Already have an account? <Link href="/login">Login</Link>
 					</>
 				)}
 			</div>
-			<div className={styles['divider']}>
-				<span>Ou</span>
-			</div>
-			<button>Continuer avec Google</button>
 		</form>
 	);
 }
