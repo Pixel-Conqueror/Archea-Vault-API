@@ -13,20 +13,20 @@ import styles from 'Styles/auth.module.scss';
 export default function RegisterPage(...args) {
 	console.log(args);
 	const fields: Array<FormAuthField> = [
-		{ name: 'first_name', label: 'Prénom', type: 'text', placeholder: 'Votre prénom' },
-		{ name: 'last_name', label: 'Nom', type: 'text', placeholder: 'Votre nom de famille' },
-		{ name: 'email', label: 'Email', type: 'email', placeholder: 'Votre adresse email' },
+		{ name: 'first_name', label: 'First name', type: 'text', placeholder: 'Your first name' },
+		{ name: 'last_name', label: 'Last name', type: 'text', placeholder: 'Your last name' },
+		{ name: 'email', label: 'Email', type: 'email', placeholder: 'Your email address' },
 		{
 			name: 'password',
 			type: 'password',
-			label: 'Mot de passe',
-			placeholder: 'Votre mot de passe',
+			label: 'Password',
+			placeholder: 'Your password',
 		},
 		{
 			name: 'confirm_password',
 			type: 'password',
-			label: 'Confirmer mot de passe',
-			placeholder: 'Confirmer votre mot de passe',
+			label: 'Confirm your password',
+			placeholder: 'Confirm your password',
 		},
 	];
 
@@ -56,7 +56,7 @@ export default function RegisterPage(...args) {
 			});
 			console.log(data);
 		} catch (error) {
-			alert(error?.error || 'Une erreur est survenue');
+			alert(error?.error || 'Somehting went wrong');
 		}
 	};
 	const handleInputChange = console.log;

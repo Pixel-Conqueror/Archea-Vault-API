@@ -12,10 +12,7 @@ Route.post('/register', 'AuthController.register');
 
 // Files
 Route.group(() => {
-	Route.get('/cloud-space', async ({ inertia, auth }) => {
-		console.log(auth.name);
-		return inertia.render('CloudSpace');
-	});
+	Route.get('/cloud-space', async ({ inertia }) => inertia.render('CloudSpace'));
 	Route.get('/logout', 'AuthController.logout');
 
 	Route.get('/filesList', 'FileController.index');

@@ -1,5 +1,18 @@
-@import 'Styles/colors.scss';
+@import "Styles/colors.scss";
 
 .searchbar {
-	color: red;
+	width: 350px;
+	background-color: #576490;
+	padding: 1em;
+	border-radius: 40px;
+	color: #c8d8fe;
+	display: flex;
+	gap: 0.75em;
+	align-items: center;
+	justify-content: center;
+
+	& input {
+		padding: 0;
+		border: 0;
+	}
 }
