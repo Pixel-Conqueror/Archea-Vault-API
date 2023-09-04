@@ -1,15 +1,22 @@
-import { Link } from '@inertiajs/inertia-react';
+import { Link, usePage } from '@inertiajs/inertia-react';
 import { AiFillClockCircle, AiFillCloud, AiFillHeart, AiFillHome } from 'react-icons/ai';
+import { CiLogout } from 'react-icons/ci';
 import { FaUserAlt } from 'react-icons/fa';
 import { TbTrashFilled } from 'react-icons/tb';
-import { CiLogout } from 'react-icons/ci';
 
+import { InertiaPage } from 'Types/inertia';
 import styles from './cloudsidebar.module.scss';
+import { calculSize } from 'Utils/index';
+
+const FAKE_STORAGE_USED = 17560000000;
 
 export default function CloudSideBar() {
+	const { auth } = usePage<InertiaPage>().props;
+	const maxStorageCapacity = Number(auth.user!.storageCapacity);
+
 	return (
 		<nav className={styles['sidebar']}>
-			<h1 className={styles['brand']}>My Space</h1>
+			<h1 className={styles['brand']}>Cloud Space</h1>
 			<nav>
 				<div className={styles['caption']}>Navigation</div>
 				<ul className={styles['items']}>
@@ -55,14 +62,15 @@ export default function CloudSideBar() {
 				</ul>
 			</nav>
 			<div className={styles['storage-used']}>
-				<Link href="/#">Increase your storage capacity</Link>
-				<progress id="file" max="100" value="70">
+				<a href="/buy-storage">Increase your storage capacity (20€)</a>
+				<progress id="file" max={maxStorageCapacity} value={FAKE_STORAGE_USED}>
 					70%
 				</progress>
 				<div className="resume">
 					You're using
 					<br />
-					<span className="color">17,56 GB</span> out of 20 GB
+					<span className="color">{calculSize(FAKE_STORAGE_USED)}</span> out of{' '}
+					{auth.user!.storageCapacityInGB} GB
 				</div>
 			</div>
 		</nav>

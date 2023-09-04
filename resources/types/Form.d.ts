@@ -1,4 +1,4 @@
-export interface FormAuthField {
+export interface FormField {
 	name: string;
 	label: string;
 	placeholder: string;

@@ -1,19 +1,24 @@
 import HealthCheck from '@ioc:Adonis/Core/HealthCheck';
 import Route from '@ioc:Adonis/Core/Route';
 
-Route.get('/', async ({ inertia }) => inertia.render('Home'));
+Route.inertia('/', 'Home');
 
 // Authentication
-Route.get('/login', async ({ inertia }) => inertia.render('Login'));
+Route.inertia('/login', 'Login');
 Route.post('/login', 'AuthController.login');
 
-Route.get('/register', async ({ inertia }) => inertia.render('Register'));
+Route.inertia('/register', 'Register');
 Route.post('/register', 'AuthController.register');
+
+Route.post('/stripe_hook', 'BillingController.hook');
 
 // Files
 Route.group(() => {
-	Route.get('/cloud-space', async ({ inertia }) => inertia.render('CloudSpace'));
+	Route.inertia('/cloud-space', 'CloudSpace');
 	Route.get('/logout', 'AuthController.logout');
+
+	// Billing storage
+	Route.get('/buy-storage', 'BillingController.checkout');
 
 	Route.get('/filesList', 'FileController.index');
 	Route.post('/fileUpload', 'FileController.uploadFile').middleware('storageCapacity');

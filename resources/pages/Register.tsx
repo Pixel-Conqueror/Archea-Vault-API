@@ -1,18 +1,25 @@
 // @ts-ignore
 import VaultImg from 'Assets/images/vault.webp';
 
-import AuthForm from 'Components/Auth/AuthForm';
+import BasicForm from 'Components/Form/BasicForm';
 import BaseLayout from 'Components/Layouts/BaseLayout';
 
-import { FormAuthField } from 'Types/AuthForm';
+import { FormField } from 'Types/Form';
 
 import { Inertia } from '@inertiajs/inertia';
+import { Link } from '@inertiajs/inertia-react';
 import styles from 'Styles/auth.module.scss';
 
-// TODO: form validity via yup
-export default function RegisterPage(...args) {
-	console.log(args);
-	const fields: Array<FormAuthField> = [
+interface RegisterFormValue {
+	first_name: string;
+	last_name: string;
+	email: string;
+	password: string;
+	[key: string]: string;
+}
+
+export default function RegisterPage() {
+	const fields: Array<FormField> = [
 		{ name: 'first_name', label: 'First name', type: 'text', placeholder: 'Your first name' },
 		{ name: 'last_name', label: 'Last name', type: 'text', placeholder: 'Your last name' },
 		{ name: 'email', label: 'Email', type: 'email', placeholder: 'Your email address' },
@@ -30,46 +37,33 @@ export default function RegisterPage(...args) {
 		},
 	];
 
-	const handleSubmit = async (fields: { id: string; value: string }[]) => {
-		const areFieldsOk = fields.reduce((acc, cur) => {
-			if (cur.value.trim().length === 0) {
-				acc = false;
-			}
-			return acc;
-		}, true);
-
-		if (!areFieldsOk) {
-			return alert('Please fill all inputs');
-		}
-
-		const email = fields.find(({ id }) => id === 'email')?.value || '';
-		const password = fields.find(({ id }) => id === 'password')?.value || '';
-		const firstName = fields.find(({ id }) => id === 'first_name')?.value || '';
-		const lastName = fields.find(({ id }) => id === 'last_name')?.value || '';
-
+	const handleSubmit = async (registerFormValue: RegisterFormValue) => {
 		try {
-			const data = await Inertia.post('/register', {
-				email,
-				password,
-				first_name: firstName,
-				last_name: lastName,
-			});
+			const data = await Inertia.post('/register', registerFormValue);
 			console.log(data);
 		} catch (error) {
-			alert(error?.error || 'Somehting went wrong');
+			alert(error?.error || 'Something went wrong');
 		}
 	};
-	const handleInputChange = console.log;
 
 	return (
 		<BaseLayout className={styles['auth-page']} childrenClassName={styles['auth-form-wrapper']}>
 			<img src={VaultImg} alt="Vault side-image" className={styles['side-image']} />
-			<AuthForm
-				type="register"
+			<BasicForm
+				title="Register"
 				fields={fields}
-				onInputChange={handleInputChange}
+				submitText="Register"
 				onSubmit={handleSubmit}
+				postFormComponent={<PostRegisterFormText />}
 			/>
 		</BaseLayout>
+	);
+}
+
+function PostRegisterFormText() {
+	return (
+		<>
+			Already have an account? <Link href="/login">Login</Link>
+		</>
 	);
 }

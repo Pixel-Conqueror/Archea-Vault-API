@@ -34,7 +34,8 @@
 		"@rocketseat/adonis-bull",
 		"@eidellev/inertia-adonisjs",
 		"@adonisjs/view",
-		"@adonisjs/session"
+		"@adonisjs/session",
+		"@mezielabs/adonis-stripe"
 	],
 	"aceProviders": [
 		"@adonisjs/repl"
