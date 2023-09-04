@@ -24,8 +24,7 @@ export default function HomePage() {
 				)}
 				{auth.isAuthenticated && (
 					<div className={styles['actions']}>
-						<Link href="/">Cloud space</Link>
-						<Link href="/">Buy storage</Link>
+						<Link href="/cloud-space">Access to my Cloud Space</Link>
 					</div>
 				)}
 			</header>

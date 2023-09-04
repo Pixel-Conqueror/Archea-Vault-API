@@ -81,6 +81,7 @@
 		"@inertiajs/inertia-react": "^0.8.1",
 		"@inertiajs/progress": "^0.2.7",
 		"@inertiajs/server": "^0.1.0",
+		"@mezielabs/adonis-stripe": "^1.0.7",
 		"@rocketseat/adonis-bull": "^1.0.4",
 		"@tanstack/react-table": "^8.9.3",
 		"@types/react": "^18.2.21",

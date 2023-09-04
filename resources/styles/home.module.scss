@@ -20,7 +20,7 @@
 		justify-self: center;
 
 		& a {
-			width: 150px;
+			min-width: 150px;
 			text-align: center;
 			color: $white;
 			background-color: $purple;

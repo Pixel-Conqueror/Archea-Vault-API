@@ -1,17 +1,23 @@
-// @ts-ignore
-import VaultImg from 'Assets/images/vault.webp';
-
-import AuthForm from 'Components/Auth/AuthForm';
-import BaseLayout from 'Components/Layouts/BaseLayout';
-
-import { FormAuthField } from 'Types/AuthForm';
-
-import styles from 'Styles/auth.module.scss';
 import { Inertia } from '@inertiajs/inertia';
 
-export default function LoginPage(...args) {
-	console.log(args);
-	const fields: Array<FormAuthField> = [
+// @ts-ignore
+import VaultImg from 'Assets/images/vault.webp';
+import { FormField } from 'Types/Form';
+
+import BasicForm from 'Components/Form/BasicForm';
+import BaseLayout from 'Components/Layouts/BaseLayout';
+
+import { Link } from '@inertiajs/inertia-react';
+import styles from 'Styles/auth.module.scss';
+
+interface LoginFormValue {
+	email: string;
+	password: string;
+	[key: string]: string;
+}
+
+export default function LoginPage() {
+	const fields: Array<FormField> = [
 		{
 			name: 'email',
 			label: 'Email',
@@ -26,38 +32,33 @@ export default function LoginPage(...args) {
 		},
 	];
 
-	const handleSubmit = async (fields: { id: string; value: string }[]) => {
-		const areFieldsOk = fields.reduce((acc, cur) => {
-			if (cur.value.trim().length === 0) {
-				acc = false;
-			}
-			return acc;
-		}, true);
-
-		if (!areFieldsOk) {
-			return alert('Please fill all inputs');
-		}
-
-		const email = fields.find(({ id }) => id === 'email')?.value || '';
-		const password = fields.find(({ id }) => id === 'password')?.value || '';
-
+	const handleSubmit = async (loginFormValue: LoginFormValue) => {
 		try {
-			const data = await Inertia.post('/login', {
-				email,
-				password,
-			});
+			const data = await Inertia.post('/login', loginFormValue);
 			console.log(data);
 		} catch (error) {
 			alert(error?.error || 'Something went wrong');
 		}
 	};
 
-	// TODO: remove layout and put background image
-	// and move vault image to AuthForm component
 	return (
 		<BaseLayout className={styles['auth-page']} childrenClassName={styles['auth-form-wrapper']}>
 			<img src={VaultImg} alt="Vault side-image" className={styles['side-image']} />
-			<AuthForm type="login" fields={fields} onSubmit={handleSubmit} />
+			<BasicForm
+				title="Login"
+				fields={fields}
+				submitText="Sign in"
+				onSubmit={handleSubmit}
+				postFormComponent={<PostLoginFormText />}
+			/>
 		</BaseLayout>
+	);
+}
+
+function PostLoginFormText() {
+	return (
+		<>
+			Don't have an account yet? <Link href="/register">Register now</Link>
+		</>
 	);
 }

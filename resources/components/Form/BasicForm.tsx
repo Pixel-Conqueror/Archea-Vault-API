@@ -1,31 +1,47 @@
-import { Link, usePage } from '@inertiajs/inertia-react';
-import { ChangeEvent, FormEvent } from 'react';
+import { usePage } from '@inertiajs/inertia-react';
+import { ChangeEvent, FormEvent, ReactNode } from 'react';
 
-import { FormAuthField } from 'Types/AuthForm';
-
-import styles from 'Styles/auth.module.scss';
+import { FormField } from 'Types/Form';
 import { InertiaPage } from 'Types/inertia';
 
-interface AuthFormProps {
-	fields: Array<FormAuthField>;
-	type: 'login' | 'register';
+import styles from 'Styles/auth.module.scss';
+
+interface BasicFormProps {
+	fields: Array<FormField>;
+	title: string;
+	submitText?: string;
 	onSubmit?: (values: any) => void;
 	onInputChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+	postFormComponent?: ReactNode;
 }
-export default function AuthForm({ fields, type, onSubmit, onInputChange }: AuthFormProps) {
+export default function BasicForm({
+	fields,
+	title,
+	submitText = 'Submit',
+	onSubmit,
+	onInputChange,
+	postFormComponent,
+}: BasicFormProps) {
 	const { errors } = usePage<InertiaPage>().props;
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const formData = new FormData(event.target as HTMLFormElement);
 		const entries = Array.from(formData.entries());
+		const object = entries.reduce((obj, [key, value]) => Object.assign(obj, { [key]: value }), {});
 
-		const values = entries.map(([key, value]) => ({
-			id: key,
-			value,
-		}));
+		const areFieldsOk = entries.reduce((acc, [_, value]) => {
+			if ((value as string).trim().length === 0) {
+				acc = false;
+			}
+			return acc;
+		}, true);
 
-		onSubmit && onSubmit(values);
+		if (!areFieldsOk) {
+			return alert('Please fill all inputs');
+		}
+
+		onSubmit && onSubmit(object);
 	};
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) =>
@@ -33,7 +49,7 @@ export default function AuthForm({ fields, type, onSubmit, onInputChange }: Auth
 
 	return (
 		<form className={styles['auth-form']} onSubmit={handleSubmit}>
-			<h1>{type === 'login' ? 'Connection' : 'Register'}</h1>
+			<h1>{title}</h1>
 			{fields.map(({ name, label, type, placeholder }) => (
 				<div
 					className={styles['field']}
@@ -53,26 +69,18 @@ export default function AuthForm({ fields, type, onSubmit, onInputChange }: Auth
 						id={name}
 					/>
 					{errors?.[name] && (
-						<div className="legend" style={{ color: 'red' }}>
+						<div className="legend" style={{ color: 'red', textAlign: 'left' }}>
 							{errors[name]}
 						</div>
 					)}
 				</div>
 			))}
 			<div className={styles['field']}>
-				<button>{type === 'login' ? 'Sign in' : 'Register'}</button>
+				<button>{submitText}</button>
 			</div>
-			<div className={`${styles['field']} ${styles['inline']}`}>
-				{type === 'login' ? (
-					<>
-						Don't have an account yet? <Link href="/register">Register now</Link>
-					</>
-				) : (
-					<>
-						Already have an account? <Link href="/login">Login</Link>
-					</>
-				)}
-			</div>
+			{postFormComponent && (
+				<div className={`${styles['field']} ${styles['inline']}`}>{postFormComponent}</div>
+			)}
 		</form>
 	);
 }
