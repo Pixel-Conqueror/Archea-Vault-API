@@ -19,7 +19,9 @@ export default function Navbar() {
 			<ul className={styles['block']}>
 				{auth.isAuthenticated ? (
 					<>
-						<li>{auth.user?.fullName}</li>
+						<li>
+							<Link href="/profile">{auth.user?.fullName}</Link>
+						</li>
 						<li>
 							<Link href="/logout">Logout</Link>
 						</li>

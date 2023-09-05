@@ -48,9 +48,9 @@ export default function BasicForm({
 		onInputChange && onInputChange(event);
 
 	return (
-		<form className={styles['auth-form']} onSubmit={handleSubmit}>
+		<form className={styles['auth-form']} onSubmit={handleSubmit} aria-disabled={!onSubmit}>
 			<h1>{title}</h1>
-			{fields.map(({ name, label, type, placeholder }) => (
+			{fields.map(({ name, label, type = 'text', placeholder = label, defaultValue }) => (
 				<div
 					className={styles['field']}
 					// initial={{ x: -30, opacity: 0 }}
@@ -67,6 +67,8 @@ export default function BasicForm({
 						placeholder={placeholder}
 						name={name}
 						id={name}
+						defaultValue={defaultValue}
+						disabled={!onSubmit}
 					/>
 					{errors?.[name] && (
 						<div className="legend" style={{ color: 'red', textAlign: 'left' }}>
@@ -75,9 +77,11 @@ export default function BasicForm({
 					)}
 				</div>
 			))}
-			<div className={styles['field']}>
-				<button>{submitText}</button>
-			</div>
+			{onSubmit && (
+				<div className={styles['field']}>
+					<button>{submitText}</button>
+				</div>
+			)}
 			{postFormComponent && (
 				<div className={`${styles['field']} ${styles['inline']}`}>{postFormComponent}</div>
 			)}

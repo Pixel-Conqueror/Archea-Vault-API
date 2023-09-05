@@ -8,7 +8,7 @@ import { InertiaPage } from 'Types/inertia';
 import styles from './cloudsidebar.module.scss';
 import { calculSize } from 'Utils/index';
 
-const FAKE_STORAGE_USED = 17560000000;
+const FAKE_STORAGE_USED = 1000 * 1000 * 1000 * 17.56;
 
 export default function CloudSideBar() {
 	const { auth } = usePage<InertiaPage>().props;
@@ -26,8 +26,8 @@ export default function CloudSideBar() {
 						</Link>
 					</li>
 					<li className={styles['item']}>
-						<Link href="/#">
-							<FaUserAlt /> My account
+						<Link href="/profile">
+							<FaUserAlt /> {auth.user?.fullName}
 						</Link>
 					</li>
 					<li className={styles['item']}>

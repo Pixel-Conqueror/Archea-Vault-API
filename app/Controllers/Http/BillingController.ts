@@ -1,55 +1,54 @@
+import Drive from '@ioc:Adonis/Core/Drive';
 import Env from '@ioc:Adonis/Core/Env';
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import Logger from '@ioc:Adonis/Core/Logger';
+import StripeController from '@ioc:Archea/StripeController';
+import UserController from '@ioc:Archea/UserController';
 import Stripe from '@ioc:Mezielabs/Stripe';
 import User from 'App/Models/User';
+import FileConfig from 'Config/filepath';
+import BillingInterface from 'Contracts/interfaces/Billing.interface';
 
-const STORAGE_PRICE = 2000; // 2k cents -> 20€
-const MAX_STORAGE_IN_BYTES = 1024 * 1024 * 1024 * 20;
+export default class BillingController implements BillingInterface {
+	private userController: typeof UserController;
+	private stripeController: typeof StripeController;
 
-export default class BillingsController {
-	public async checkout({ response, auth }: HttpContextContract) {
-		const { url } = await Stripe.checkout.sessions.create({
-			payment_method_types: ['card'],
-			mode: 'payment',
-			line_items: [
-				{
-					price_data: {
-						currency: 'eur',
-						product_data: {
-							name: '20 GB storage space',
-						},
-						unit_amount: STORAGE_PRICE,
-					},
-					quantity: 1,
-				},
-			],
-			success_url: `${Env.get('APP_URL')}/cloud-space`,
-			cancel_url: Env.get('APP_URL'),
-			invoice_creation: {
-				enabled: true,
-			},
-			customer_email: auth.user?.email,
-		});
-		return response.redirect(url!);
+	constructor() {
+		this.init();
 	}
 
-	public async hook({ request }: HttpContextContract) {
+	protected async init() {
+		this.userController = await UserController;
+		this.stripeController = await StripeController;
+	}
+	public async checkout(ctx: HttpContextContract) {
+		const { url } = await this.stripeController.createCheckoutSession(ctx);
+		ctx.response.redirect(url!);
+	}
+
+	public async stripeHook({ request }: HttpContextContract) {
 		const event = createStripeEvent(request);
 		if (!event) return;
 
-		const body = request.body();
-		const customerEmail = body?.data?.object?.customer_email;
+		const customerEmail = event.data.object['customer_email'];
+		const invoiceId = event.data.object['invoice'];
 
-		const { storageCapacity } = await User.findByOrFail('email', customerEmail);
+		const user = await this.userController.addStorage(customerEmail);
+		Logger.info(`storage purchase validated: ${customerEmail}`);
 
-		await User.updateOrCreate(
-			{
-				email: customerEmail,
-			},
-			{
-				storageCapacity: Number(storageCapacity) + MAX_STORAGE_IN_BYTES,
-			}
-		);
+		await this.downloadInvoiceById(invoiceId, user);
+		Logger.info(`invoice ${invoiceId} downloaded`);
+	}
+
+	public async downloadInvoiceById(invoiceId: string, user: User) {
+		const invoice = await this.stripeController.getInvoiceById(invoiceId);
+
+		const request = await fetch(invoice.invoice_pdf!);
+		const blob = await request.blob();
+		const arrayBuffer = await blob.arrayBuffer();
+		const content = Buffer.from(arrayBuffer);
+
+		await Drive.put(`${FileConfig.invoice}/${user.id}/${invoiceId}.pdf`, content);
 	}
 }
 

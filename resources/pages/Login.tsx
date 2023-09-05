@@ -34,8 +34,7 @@ export default function LoginPage() {
 
 	const handleSubmit = async (loginFormValue: LoginFormValue) => {
 		try {
-			const data = await Inertia.post('/login', loginFormValue);
-			console.log(data);
+			await Inertia.post('/login', loginFormValue);
 		} catch (error) {
 			alert(error?.error || 'Something went wrong');
 		}
