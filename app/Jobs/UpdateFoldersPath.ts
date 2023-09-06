@@ -13,9 +13,8 @@ export default class UpdateFoldersPath implements JobContract {
 
 	private async updateChildPaths(parentFolder: Folder) {
 		const childFolders = await Folder.query().where('parent_id', parentFolder.id);
-
-		// Mise à jour des fichiers enfants
 		const childFiles = await File.query().where('folder_id', parentFolder.id);
+
 		for (const childFile of childFiles) {
 			const newPath =
 				parentFolder.path === ''

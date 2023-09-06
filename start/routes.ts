@@ -13,6 +13,8 @@ Route.post('/register', 'AuthController.register');
 // Route called by stripe whenever an event is triggered
 Route.post('/stripe_hook', 'BillingController.stripeHook');
 
+Route.delete('/folderDelete', 'FolderController.delete');
+
 // Files
 Route.group(() => {
 	Route.inertia('/cloud-space', 'CloudSpace');

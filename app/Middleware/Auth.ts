@@ -74,7 +74,7 @@ export default class AuthMiddleware {
 			await this.authenticate(auth, guards);
 			await next();
 		} catch (_) {
-			return response.redirect(this.redirectTo);
+			return response.json(this.redirectTo);
 		}
 	}
 }
