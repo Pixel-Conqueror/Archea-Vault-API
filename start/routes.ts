@@ -34,6 +34,10 @@ Route.group(() => {
 	Route.patch('/folderUpdate', 'FolderController.update');
 }).middleware('auth');
 
+Route.group(() => {
+	Route.get('/admin', 'AdminController.index');
+});
+
 // Monitoring
 Route.get('/health', async ({ response }) => {
 	const report = await HealthCheck.getReport();

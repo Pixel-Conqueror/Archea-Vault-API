@@ -1,6 +1,7 @@
 @import "Styles/colors.scss";
 
 .sidebar {
+	width: 325px;
 	background-color: $dark-blue;
 	padding: 1.5em;
 	display: flex;
@@ -43,9 +44,4 @@
 			align-items: center;
 		}
 	}
-}
-
-.storage-used {
-	display: flex;
-	flex-direction: column;
 }

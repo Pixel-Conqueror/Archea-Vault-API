@@ -4,6 +4,8 @@ import styles from './navbar.module.scss';
 
 export default function Navbar() {
 	const { auth } = usePage<InertiaPage>().props;
+	const isAdmin = auth.user?.role === 1;
+	console.log(auth.user);
 	return (
 		<nav className={styles['navbar']}>
 			<ul className={styles['block']}>
@@ -13,6 +15,13 @@ export default function Navbar() {
 				{auth.isAuthenticated && (
 					<li>
 						<Link href="/cloud-space">Cloud space</Link>
+					</li>
+				)}
+				{auth.isAuthenticated && isAdmin && (
+					<li>
+						<Link href="/admin" style={{ color: 'red' }}>
+							Admin
+						</Link>
 					</li>
 				)}
 			</ul>

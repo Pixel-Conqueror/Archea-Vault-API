@@ -32,4 +32,8 @@ export default class UserController implements UserInterface {
 			}
 		);
 	}
+
+	public async getUsers() {
+		return await User.all();
+	}
 }
