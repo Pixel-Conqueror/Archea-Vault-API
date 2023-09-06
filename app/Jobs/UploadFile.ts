@@ -14,13 +14,13 @@ export default class UploadFile implements JobContract {
 	public async handle(datas: any) {
 		const { userId, file, tmpPath } = datas.data;
 		try {
-			// Enregistrez les informations du fichier dans la base de données
 			const dbFile = await File.create({
 				userId,
 				name: file.clientName.replace(/\.[^/.]+$/, ''),
 				type: file.extname,
 				size: file.size,
 				path: '',
+				folderId: null,
 			});
 
 			const buffer = await fs.readFile(tmpPath);

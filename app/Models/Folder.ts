@@ -1,37 +1,36 @@
 import { DateTime } from 'luxon';
+import { BaseModel, column, belongsTo, BelongsTo, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm';
 import { v4 as uuidv4 } from 'uuid';
-import { BaseModel, BelongsTo, belongsTo, computed, column } from '@ioc:Adonis/Lucid/Orm';
 import User from './User';
-import Folder from './Folder';
+import File from './File';
 
-export default class File extends BaseModel {
+export default class Folder extends BaseModel {
 	@column({ isPrimary: true, serialize: (value: string) => value })
 	public id: string = uuidv4();
-
-	@column()
-	public userId: string = uuidv4();
 
 	@column()
 	public name: string;
 
 	@column()
-	public type: string;
-
-	@column()
-	public size: number;
-
-	@column()
 	public path: string;
 
-	@column()
-	public folderId?: null | string = uuidv4();
+	@column({ serializeAs: 'userId' })
+	public userId: string = uuidv4();
 
-	@column.dateTime({ autoCreate: true, serialize: (value: DateTime) => value.toISODate() })
+	@column({ serializeAs: 'parentId' })
+	public parentId: string = uuidv4();
+
+	@column.dateTime({
+		autoCreate: true,
+		serializeAs: 'createdAt',
+		serialize: (value: DateTime) => value.toISODate(),
+	})
 	public createdAt: DateTime;
 
 	@column.dateTime({
 		autoCreate: true,
 		autoUpdate: true,
+		serializeAs: 'updatedAt',
 		serialize: (value: DateTime) => value.toISODate(),
 	})
 	public updatedAt: DateTime;
@@ -42,8 +41,6 @@ export default class File extends BaseModel {
 	@belongsTo(() => Folder)
 	public folder: BelongsTo<typeof Folder>;
 
-	@computed()
-	public get fileName() {
-		return `${this.name}.${this.type}`;
-	}
+	@hasMany(() => File)
+	public files: HasMany<typeof File>;
 }

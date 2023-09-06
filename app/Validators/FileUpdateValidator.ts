@@ -9,17 +9,6 @@ export default class FileUpdateValidator {
 		name: schema.string({ trim: true }, [rules.required()]),
 	});
 
-	/**
-	 * Custom messages for validation failures. You can make use of dot notation `(.)`
-	 * for targeting nested fields and array expressions `(*)` for targeting all
-	 * children of an array. For example:
-	 *
-	 * {
-	 *   'profile.username.required': 'Username is required',
-	 *   'scores.*.number': 'Define scores as valid numbers'
-	 * }
-	 *
-	 */
 	public messages: CustomMessages = {
 		'fileId.required': 'File id is required',
 		'name.required': 'Name is required',

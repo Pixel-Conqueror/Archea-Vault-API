@@ -25,6 +25,10 @@ Route.group(() => {
 	Route.patch('/fileUpdate', 'FileController.updateFile').middleware('fileAccess');
 	Route.delete('/fileDelete', 'FileController.deleteFile').middleware('fileAccess');
 	//-------------------------------------
+
+	//Folders
+	Route.post('/folderCreate', 'FolderController.create');
+	Route.patch('/folderUpdate', 'FolderController.update');
 }).middleware('auth');
 
 //Monitoring

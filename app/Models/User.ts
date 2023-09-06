@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Hash from '@ioc:Adonis/Core/Hash';
 import { column, beforeSave, BaseModel, computed, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm';
 import File from './File';
+import Folder from './Folder';
 
 export default class User extends BaseModel {
 	@column({ isPrimary: true, serialize: (value: string) => value })
@@ -51,6 +52,9 @@ export default class User extends BaseModel {
 
 	@hasMany(() => File)
 	public files: HasMany<typeof File>;
+
+	@hasMany(() => Folder)
+	public folders: HasMany<typeof Folder>;
 
 	@beforeSave()
 	public static async hashPassword(user: User) {
