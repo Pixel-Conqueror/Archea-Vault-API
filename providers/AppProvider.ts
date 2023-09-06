@@ -5,6 +5,18 @@ export default class AppProvider {
 
 	public register() {
 		// Register your own bindings
+		this.app.container.singleton('Archea/UserController', async () => {
+			const UserController = (await import('../app/Controllers/Http/UserController')).default;
+			return new UserController();
+		});
+		this.app.container.singleton('Archea/BillingController', async () => {
+			const BillingController = (await import('../app/Controllers/Http/BillingController')).default;
+			return new BillingController();
+		});
+		this.app.container.singleton('Archea/StripeController', async () => {
+			const StripesController = (await import('../app/Controllers/Http/StripeController')).default;
+			return new StripesController();
+		});
 	}
 
 	public async boot() {

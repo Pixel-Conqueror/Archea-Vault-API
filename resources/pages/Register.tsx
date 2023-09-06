@@ -1,45 +1,68 @@
 // @ts-ignore
 import VaultImg from 'Assets/images/vault.webp';
 
-import AuthForm from 'Components/Auth/AuthForm';
+import BasicForm from 'Components/Form/BasicForm';
 import BaseLayout from 'Components/Layouts/BaseLayout';
 
-import { FormAuthField } from 'Types/AuthForm';
+import { FormField } from 'Types/Form';
 
+import { Inertia } from '@inertiajs/inertia';
+import { Link } from '@inertiajs/inertia-react';
 import styles from 'Styles/auth.module.scss';
 
-// TODO: form validity via yup
+interface RegisterFormValue {
+	first_name: string;
+	last_name: string;
+	email: string;
+	password: string;
+	[key: string]: string;
+}
+
 export default function RegisterPage() {
-	const fields: Array<FormAuthField> = [
-		{ name: 'firstname', label: 'Prénom', type: 'text', placeholder: 'Votre prénom' },
-		{ name: 'lastname', label: 'Nom', type: 'text', placeholder: 'Votre nom de famille' },
-		{ name: 'email', label: 'Email', type: 'email', placeholder: 'Votre adresse email' },
+	const fields: Array<FormField> = [
+		{ name: 'first_name', label: 'First name', type: 'text', placeholder: 'Your first name' },
+		{ name: 'last_name', label: 'Last name', type: 'text', placeholder: 'Your last name' },
+		{ name: 'email', label: 'Email', type: 'email', placeholder: 'Your email address' },
 		{
 			name: 'password',
 			type: 'password',
-			label: 'Mot de passe',
-			placeholder: 'Votre mot de passe',
+			label: 'Password',
+			placeholder: 'Your password',
 		},
 		{
 			name: 'confirm_password',
 			type: 'password',
-			label: 'Confirmer mot de passe',
-			placeholder: 'Confirmer votre mot de passe',
+			label: 'Confirm your password',
+			placeholder: 'Confirm your password',
 		},
 	];
 
-	const handleSubmit = console.log;
-	const handleInputChange = console.log;
+	const handleSubmit = async (registerFormValue: RegisterFormValue) => {
+		try {
+			await Inertia.post('/register', registerFormValue);
+		} catch (error) {
+			alert(error?.error || 'Something went wrong');
+		}
+	};
 
 	return (
 		<BaseLayout className={styles['auth-page']} childrenClassName={styles['auth-form-wrapper']}>
 			<img src={VaultImg} alt="Vault side-image" className={styles['side-image']} />
-			<AuthForm
-				type="register"
+			<BasicForm
+				title="Register"
 				fields={fields}
-				onInputChange={handleInputChange}
+				submitText="Register"
 				onSubmit={handleSubmit}
+				postFormComponent={<PostRegisterFormText />}
 			/>
 		</BaseLayout>
+	);
+}
+
+function PostRegisterFormText() {
+	return (
+		<>
+			Already have an account? <Link href="/login">Login</Link>
+		</>
 	);
 }

@@ -15,28 +15,33 @@ export default class User extends BaseModel {
 	@column({ serializeAs: null })
 	public password: string;
 
-	@column()
+	@column({ serializeAs: 'firstName' })
 	public firstName: string;
 
-	@column()
+	@column({ serializeAs: 'lastName' })
 	public lastName: string;
 
-	@column()
+	@column({ serializeAs: 'isEmailVerified' })
 	public isEmailVerified: boolean = false;
 
 	@column()
 	public role: number = 0;
 
-	@column()
+	@column({ serializeAs: 'storageCapacity' })
 	public storageCapacity: number = 0;
 
-	@column.dateTime({ autoCreate: true, serialize: (value: DateTime) => value.toISODate() })
+	@column.dateTime({
+		autoCreate: true,
+		serialize: (value: DateTime) => value.toISODate(),
+		serializeAs: 'createdAt',
+	})
 	public createdAt: DateTime;
 
 	@column.dateTime({
 		autoCreate: true,
 		autoUpdate: true,
 		serialize: (value: DateTime) => value.toISODate(),
+		serializeAs: 'updatedAt',
 	})
 	public updatedAt: DateTime;
 

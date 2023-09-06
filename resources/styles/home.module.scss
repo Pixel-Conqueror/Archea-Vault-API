@@ -1,0 +1,35 @@
+@import "./colors.scss";
+
+.header {
+	font-size: 1.25em;
+	margin-top: 3em;
+	display: flex;
+	gap: 1em;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+
+	& p {
+		text-align: center;
+	}
+
+	& .actions {
+		display: flex;
+		gap: 0.75em;
+		align-items: center;
+		justify-self: center;
+
+		& a {
+			min-width: 150px;
+			text-align: center;
+			color: $white;
+			background-color: $purple;
+			border-radius: 3px;
+			padding: 0.35em;
+
+			&:hover {
+				transform: scale(1.05);
+			}
+		}
+	}
+}

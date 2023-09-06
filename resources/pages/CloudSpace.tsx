@@ -1,15 +1,20 @@
 import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
-import { BsDot } from 'react-icons/bs';
+import {
+	AiFillHeart,
+	AiOutlineCloudUpload,
+	AiOutlineFolderAdd,
+	AiOutlineHeart,
+} from 'react-icons/ai';
+import { BsDot, BsFillGearFill, BsThreeDots } from 'react-icons/bs';
 
 import BasicTable from 'Components/BasicTable';
 import LargeLayout from 'Components/Layouts/LargeLayout';
 import SearchBar from 'Components/SearchBar/SearchBar';
+import UserHeader from 'Components/UserHeader/UserHeader';
 
 import { calculSize } from 'Utils/index';
 
 import styles from 'Styles/cloudspace.module.scss';
-console.log(styles);
 
 interface File {
 	name: string;
@@ -46,10 +51,10 @@ export default function CloudSpace() {
 				cell: (props) => (props.getValue() === true ? <AiFillHeart /> : <BsDot />),
 			}),
 			usersColumnHelper.accessor('name', {
-				header: () => 'Nom',
+				header: () => 'Name',
 			}),
 			usersColumnHelper.accessor('size', {
-				header: () => 'Taille',
+				header: () => 'Size',
 				cell: (props) => calculSize(props.getValue()),
 			}),
 			usersColumnHelper.accessor('type', {
@@ -57,7 +62,11 @@ export default function CloudSpace() {
 				cell: (props) => (props.getValue() === 'folder' ? 'Dossier' : props.getValue()),
 			}),
 			usersColumnHelper.accessor('createdAt', {
-				header: () => "Date d'ajout",
+				header: () => 'Creation Date',
+			}),
+			usersColumnHelper.accessor('name', {
+				header: () => <BsFillGearFill />,
+				cell: () => <BsThreeDots />,
 			}),
 		],
 		getCoreRowModel: getCoreRowModel(),
@@ -69,8 +78,19 @@ export default function CloudSpace() {
 		>
 			<div className={styles['header']}>
 				<SearchBar />
+				<UserHeader />
 			</div>
-			<h2>Espace de stockage</h2>
+			<div className={styles['vue-manager']}>
+				<h2>Storage space</h2>
+				<div className={styles['options']}>
+					<span>
+						<AiOutlineFolderAdd /> Create a folder
+					</span>
+					<span>
+						<AiOutlineCloudUpload /> Upload
+					</span>
+				</div>
+			</div>
 			<BasicTable table={filesTable} />
 		</LargeLayout>
 	);

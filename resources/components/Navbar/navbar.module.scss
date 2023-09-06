@@ -1,6 +1,8 @@
+@import "Styles/colors.scss";
+
 .navbar {
 	width: 100%;
-	background-color: #576490;
+	background-color: $purple;
 	padding: 1em;
 	border-radius: 3px;
 	display: flex;

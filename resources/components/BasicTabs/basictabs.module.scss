@@ -1,0 +1,56 @@
+@import "Styles/colors.scss";
+
+.tabs {
+	-webkit-tap-highlight-color: transparent;
+
+	& .tab-list {
+		border-bottom: 1px solid $purple;
+		margin: 0 0 10px;
+		padding: 0;
+	}
+
+	& .tab {
+		display: inline-block;
+		border: 1px solid transparent;
+		border-bottom: none;
+		bottom: -1px;
+		position: relative;
+		list-style: none;
+		padding: 6px 12px;
+		cursor: pointer;
+
+		&-selected {
+			background: $purple;
+			border-color: $purple;
+			color: $white;
+			border-radius: 5px 5px 0 0;
+		}
+
+		&-disabled {
+			color: $lightest-blue;
+			cursor: default;
+		}
+
+		&:focus {
+			outline: none;
+
+			&:after {
+				content: "";
+				position: absolute;
+				height: 5px;
+				left: -4px;
+				right: -4px;
+				bottom: -5px;
+				background: $purple;
+			}
+		}
+	}
+
+	& .tab-panel {
+		display: none;
+
+		&-selected {
+			display: block;
+		}
+	}
+}
