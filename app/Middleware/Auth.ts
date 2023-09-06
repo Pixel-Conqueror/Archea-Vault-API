@@ -61,7 +61,7 @@ export default class AuthMiddleware {
 	 * Handle request
 	 */
 	public async handle(
-		{ auth }: HttpContextContract,
+		{ auth, response }: HttpContextContract,
 		next: () => Promise<void>,
 		customGuards: (keyof GuardsList)[]
 	) {
@@ -70,7 +70,11 @@ export default class AuthMiddleware {
 		 * the config file
 		 */
 		const guards = customGuards.length ? customGuards : [auth.name];
-		await this.authenticate(auth, guards);
-		await next();
+		try {
+			await this.authenticate(auth, guards);
+			await next();
+		} catch (_) {
+			return response.redirect(this.redirectTo);
+		}
 	}
 }
