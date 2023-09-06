@@ -39,8 +39,7 @@ export default function RegisterPage() {
 
 	const handleSubmit = async (registerFormValue: RegisterFormValue) => {
 		try {
-			const data = await Inertia.post('/register', registerFormValue);
-			console.log(data);
+			await Inertia.post('/register', registerFormValue);
 		} catch (error) {
 			alert(error?.error || 'Something went wrong');
 		}

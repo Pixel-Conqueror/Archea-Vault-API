@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "node ace serve --watch",
+		"debug": "node ace serve --watch --node-args=\"--inspect\"",
 		"build": "node ace build --production",
 		"start": "node server.js",
 		"test": "node ace test",
@@ -87,6 +88,7 @@
 		"@types/react": "^18.2.21",
 		"@types/react-dom": "^18.2.7",
 		"babel-plugin-transform-import-meta": "^2.2.1",
+		"dayjs": "^1.11.9",
 		"framer-motion": "^10.16.1",
 		"luxon": "^3.4.0",
 		"pg": "^8.11.2",
@@ -94,6 +96,7 @@
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-icons": "^4.10.1",
+		"react-tabs": "^6.0.2",
 		"reflect-metadata": "^0.1.13",
 		"source-map-support": "^0.5.21",
 		"tsconfig-paths-webpack-plugin": "^4.1.0",

@@ -14,3 +14,9 @@ declare module '@ioc:Mezielabs/Stripe' {
 
 	export default stripe;
 }
+
+declare module '@ioc:Archea/StripeController' {
+	import StripeInterface from 'Contracts/interfaces/Stripe.interface';
+	const StripeController: StripeInterface;
+	export default StripeController;
+}
