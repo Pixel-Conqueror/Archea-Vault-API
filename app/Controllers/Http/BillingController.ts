@@ -30,11 +30,12 @@ export default class BillingController implements BillingInterface {
 		const event = createStripeEvent(request);
 		if (!event) return;
 
-		const customerEmail = event.data.object['customer_email'];
 		const invoiceId = event.data.object['invoice'];
+		const customerId = event.data.object['customer'];
+		const customer = await this.stripeController.getCustomerById(customerId);
 
-		const user = await this.userController.addStorage(customerEmail);
-		Logger.info(`storage purchase validated: ${customerEmail}`);
+		const user = await this.userController.addStorage(customer.email!);
+		Logger.info(`storage purchase validated: ${customer.email}`);
 
 		await this.downloadInvoiceById(invoiceId, user);
 		Logger.info(`invoice ${invoiceId} downloaded`);

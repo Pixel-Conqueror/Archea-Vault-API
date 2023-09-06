@@ -15,6 +15,7 @@ export default function BasicTabs({
 			<TabList className={styles['tab-list']}>
 				{tabNames.map((name) => (
 					<Tab
+						key={name}
 						className={styles['tab']}
 						selectedClassName={styles['tab-selected']}
 						disabledClassName={styles['tab-disabled']}

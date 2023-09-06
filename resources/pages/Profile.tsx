@@ -46,7 +46,7 @@ export default function Profile({
 					<BasicForm title={user!.fullName} fields={fields} />
 					<button style={{ backgroundColor: 'red' }}>delete account (todo)</button>
 				</>
-				<Invoices invoices={invoices} />
+				{invoices.length === 0 ? <p>No invoice yet</p> : <Invoices invoices={invoices} />}
 			</BasicTabs>
 		</BaseLayout>
 	);

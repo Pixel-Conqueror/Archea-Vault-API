@@ -8,5 +8,8 @@ export default interface StripeInterface {
 	): Promise<Stripe.Response<Stripe.Checkout.Session>>;
 	getInvoiceById(invoiceId: string): Promise<Stripe.Invoice>;
 	getUserInvoices(user: User): Promise<Stripe.Invoice[]>;
+	findCustomerByEmail(email: string): Promise<Stripe.Customer>;
 	getCustomerByEmail(email: string): Promise<Stripe.Customer>;
+	findCustomerById(id: string): Promise<Stripe.Customer>;
+	getCustomerById(id: string): Promise<Stripe.Customer>;
 }

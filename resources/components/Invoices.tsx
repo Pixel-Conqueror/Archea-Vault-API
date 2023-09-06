@@ -6,7 +6,6 @@ import { Stripe } from 'stripe';
 const usersColumnHelper = createColumnHelper<any>();
 
 export default function Invoices({ invoices }: { invoices: Array<Stripe.Invoice> }) {
-	console.log(invoices);
 	const invoicesTable = useReactTable({
 		data: invoices,
 		columns: [
