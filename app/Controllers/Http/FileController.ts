@@ -4,20 +4,36 @@ import Drive from '@ioc:Adonis/Core/Drive';
 import File from 'App/Models/File';
 import UploadFile from 'App/Jobs/UploadFile';
 import FileUpdateValidator from 'App/Validators/FileUpdateValidator';
+import fs from 'fs-extra';
+import path from 'path';
+import { join } from 'path';
+import Folder from 'App/Models/Folder';
+import Redis from '@ioc:Adonis/Addons/Redis';
+import UploadFileValidator from 'App/Validators/UploadFileValidator';
 
 export default class FileController {
-	public async index({ auth, response }: HttpContextContract) {
-		try {
-			const user = auth.user;
-			await user?.load('files');
+	public async index({ params, auth, response }: HttpContextContract) {
+		const { userId } = params;
+		if (!userId) {
+			return response.status(401).json({ error: 'User not authenticated' });
+		}
 
-			if (!user?.files) {
-				return response.ok({ message: 'Aucun fichier' });
-			} else {
-				return response.ok({ files: user?.files });
+		try {
+			const redisKey = `folderStructure:${userId}`;
+
+			const folderStructureFromRedis = await Redis.get(redisKey);
+			if (folderStructureFromRedis) {
+				return response.ok(JSON.parse(folderStructureFromRedis));
 			}
+
+			const rootPath = `tmp/uploads/${userId}`;
+			const folderStructure = await this.buildFolderStructure(rootPath);
+			await this.enrichFolderStructureWithDBData(folderStructure);
+			await Redis.setex(redisKey, 86400, JSON.stringify(folderStructure));
+
+			return response.status(200).json(folderStructure);
 		} catch (error) {
-			return response.badRequest({ message: 'Impossible de récupérer les fichiers', error: error });
+			return response.status(500).json({ error: error });
 		}
 	}
 
@@ -38,12 +54,18 @@ export default class FileController {
 	public async uploadFile({ request, auth, response }: HttpContextContract) {
 		try {
 			const userId = auth.user?.id;
+			if (!userId) {
+				return response.status(401).json({ error: 'User not authenticated' });
+			}
+
+			const { folderId } = await request.validate(UploadFileValidator);
 			const files = request.files('files');
 
 			const filesDatas = files.map((file: any) => ({
 				userId: userId,
 				file: file,
 				tmpPath: file.tmpPath,
+				folderId: folderId ? folderId : null,
 			}));
 
 			await Promise.all(
@@ -99,6 +121,66 @@ export default class FileController {
 			return response.ok({ message: 'Fichier supprimé' });
 		} catch (error) {
 			return response.status(404).json({ message: 'Fichier non trouvé', error: error });
+		}
+	}
+
+	private async buildFolderStructure(folderPath: string): Promise<any> {
+		const folderId = path.basename(folderPath);
+		const folderStructure: any = {
+			id: folderId,
+			path: folderPath,
+			type: 'folder',
+			files: [],
+			children: [],
+		};
+
+		const items = await fs.readdir(folderPath);
+
+		for (const item of items) {
+			const itemPath = join(folderPath, item);
+			const stats = await fs.stat(itemPath);
+
+			if (stats.isDirectory()) {
+				const subFolderStructure = await this.buildFolderStructure(itemPath);
+				folderStructure.children.push(subFolderStructure);
+			} else {
+				folderStructure.files.push({
+					name: item,
+					id: item.split('.')[0],
+					type: 'file',
+				});
+			}
+		}
+
+		return folderStructure;
+	}
+
+	private async enrichFolderStructureWithDBData(folderStructure: any): Promise<void> {
+		for (const folder of folderStructure.children) {
+			if (folder.type === 'folder') {
+				const folderId = folder.id;
+				const folderData = await Folder.findOrFail(folderId);
+
+				folder.name = folderData.name;
+				folder.relativePath = folderData.path;
+				folder.createdAt = folderData.createdAt;
+				if (folder.files.length > 0) {
+					for (const file of folder.files) {
+						const fileId = file.id;
+						const fileData = await File.findOrFail(fileId);
+
+						file.name = fileData.name;
+						file.type = fileData.type;
+						file.size = fileData.size;
+						file.path = fileData.path;
+						file.createdAt = fileData.createdAt;
+					}
+				}
+			}
+
+			if (folder.children.length > 0) {
+				await this.enrichFolderStructureWithDBData(folder);
+			}
 		}
 	}
 }
