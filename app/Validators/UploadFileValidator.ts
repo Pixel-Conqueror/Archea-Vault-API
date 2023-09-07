@@ -1,16 +1,17 @@
 import { schema, rules, CustomMessages } from '@ioc:Adonis/Core/Validator';
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 
-export default class FileUpdateValidator {
+export default class UploadFileValidator {
 	constructor(protected ctx: HttpContextContract) {}
 
 	public schema = schema.create({
-		fileId: schema.string({ trim: true }, [rules.required()]),
-		name: schema.string({ trim: true }, [rules.required()]),
+		folderId: schema.string.optional({ trim: true }, [
+			rules.exists({ table: 'folders', column: 'id' }),
+		]),
 	});
 
 	public messages: CustomMessages = {
-		'fileId.required': 'File id is required',
-		'name.required': 'Name is required',
+		'folderId.string': 'Folder ID must be a string',
+		'folderId.exists': 'Folder ID must exist',
 	};
 }

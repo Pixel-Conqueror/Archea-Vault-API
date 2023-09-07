@@ -1,17 +1,15 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-	protected tableName = 'files';
+	protected tableName = 'folders';
 
 	public async up() {
 		this.schema.createTable(this.tableName, (table) => {
 			table.uuid('id').primary().unique();
-			table.uuid('user_id').references('id').inTable('users').onDelete('CASCADE').index();
 			table.string('name').notNullable();
-			table.string('type').notNullable();
-			table.bigint('size').notNullable();
 			table.text('path').notNullable();
-			table.uuid('folder_id').references('id').inTable('folders').onDelete('CASCADE').index();
+			table.uuid('user_id').references('id').inTable('users').onDelete('CASCADE').index();
+			table.uuid('parent_id').references('id').inTable('folders').onDelete('CASCADE').index();
 
 			/**
 			 * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
