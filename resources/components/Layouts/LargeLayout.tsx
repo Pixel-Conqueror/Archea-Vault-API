@@ -1,17 +1,22 @@
 import { CSSProperties, ReactNode } from 'react';
 
-import CloudSideBar from 'Components/CloudSideBar/CloudSideBar';
+import SideBar from 'Components/SideBar/SideBar';
+import styles from './layout.module.scss';
 
 export default function LargeLayout({
-	className,
-	childrenClassName,
+	className = styles['layout'],
+	childrenClassName = styles['layout-content'],
 	children,
 	style = {},
+	childrenStyle = {},
+	showSpaceStorage = true,
 }: {
 	className?: string;
 	childrenClassName?: string;
 	children: ReactNode;
 	style?: CSSProperties;
+	childrenStyle?: CSSProperties;
+	showSpaceStorage?: boolean;
 }) {
 	return (
 		<div
@@ -25,8 +30,10 @@ export default function LargeLayout({
 			// }}
 			style={style}
 		>
-			<CloudSideBar />
-			<main className={childrenClassName}>{children}</main>
+			<SideBar showSpaceStorage={showSpaceStorage} />
+			<main className={childrenClassName} style={childrenStyle}>
+				{children}
+			</main>
 		</div>
 	);
 }

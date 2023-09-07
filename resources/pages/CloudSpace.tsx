@@ -72,10 +72,7 @@ export default function CloudSpace() {
 		getCoreRowModel: getCoreRowModel(),
 	});
 	return (
-		<LargeLayout
-			className={styles['cloud-space-wrapper']}
-			childrenClassName={styles['cloud-space']}
-		>
+		<LargeLayout>
 			<div className={styles['header']}>
 				<SearchBar />
 				<UserHeader />

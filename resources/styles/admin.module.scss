@@ -1,0 +1,72 @@
+@import "Styles/colors.scss";
+
+.stats-panel {
+	width: 100%;
+	display: flex;
+	gap: 2em;
+	align-items: center;
+	flex-direction: column;
+
+	& > * {
+		width: 950px;
+	}
+}
+
+.stats-list {
+	display: flex;
+	gap: 1em;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.stats-item {
+	width: 275px;
+	height: 125px;
+	font-size: 1.5em;
+	background-color: $purple;
+	border-radius: 0.5em;
+	box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.35);
+	display: flex;
+	gap: 1em;
+	align-items: center;
+	justify-content: center;
+
+	& span.legend {
+		font-size: 0.65em;
+	}
+}
+
+.health-check {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.services {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.service-status {
+	display: flex;
+	gap: 0.5em;
+	align-items: center;
+	flex-direction: column;
+
+	& .service-name {
+		display: flex;
+		gap: 0.5em;
+		align-items: center;
+	}
+}
+
+.indicator {
+	height: 18px;
+	width: 18px;
+	border-radius: 50%;
+}

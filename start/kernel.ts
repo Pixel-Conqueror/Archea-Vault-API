@@ -27,6 +27,7 @@ Server.middleware.register([
 
 Server.middleware.registerNamed({
 	auth: () => import('App/Middleware/Auth'),
+	admin: () => import('App/Middleware/Admin'),
 	silentAuth: () => import('App/Middleware/SilentAuth'),
 	fileAccess: () => import('App/Middleware/VerifyFileAccess'),
 	storageCapacity: () => import('App/Middleware/VerifyStorageCapacity'),
