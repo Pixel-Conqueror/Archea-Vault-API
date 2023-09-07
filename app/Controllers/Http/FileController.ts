@@ -12,8 +12,8 @@ import Redis from '@ioc:Adonis/Addons/Redis';
 import UploadFileValidator from 'App/Validators/UploadFileValidator';
 
 export default class FileController {
-	public async index({ params, auth, response }: HttpContextContract) {
-		const { userId } = params;
+	public async index({ auth, response }: HttpContextContract) {
+		const userId = auth.user?.id;
 		if (!userId) {
 			return response.status(401).json({ error: 'User not authenticated' });
 		}

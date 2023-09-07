@@ -13,7 +13,6 @@ Route.post('/register', 'AuthController.register');
 // Route called by stripe whenever an event is triggered
 Route.post('/stripe_hook', 'BillingController.stripeHook');
 
-Route.get('/filesList', 'FileController.index');
 // Files
 Route.group(() => {
 	Route.inertia('/cloud-space', 'CloudSpace');
@@ -24,6 +23,7 @@ Route.group(() => {
 	Route.get('/buy-storage', 'BillingController.checkout');
 	Route.get('/invoices', 'BillingController.userInvoices');
 
+	Route.get('/filesList', 'FileController.index');
 	Route.post('/fileUpload', 'FileController.uploadFile').middleware('storageCapacity');
 	Route.get('/fileDownload/:fileId', 'FileController.downloadFile');
 	Route.patch('/fileUpdate', 'FileController.updateFile').middleware('fileAccess');
