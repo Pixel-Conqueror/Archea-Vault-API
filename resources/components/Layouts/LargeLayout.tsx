@@ -8,12 +8,14 @@ export default function LargeLayout({
 	childrenClassName = styles['layout-content'],
 	children,
 	style = {},
+	childrenStyle = {},
 	showSpaceStorage = true,
 }: {
 	className?: string;
 	childrenClassName?: string;
 	children: ReactNode;
 	style?: CSSProperties;
+	childrenStyle?: CSSProperties;
 	showSpaceStorage?: boolean;
 }) {
 	return (
@@ -29,7 +31,9 @@ export default function LargeLayout({
 			style={style}
 		>
 			<SideBar showSpaceStorage={showSpaceStorage} />
-			<main className={childrenClassName}>{children}</main>
+			<main className={childrenClassName} style={childrenStyle}>
+				{children}
+			</main>
 		</div>
 	);
 }

@@ -1,4 +1,4 @@
-import { Children, ReactNode } from 'react';
+import { CSSProperties, Children, ReactNode } from 'react';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 
 import styles from './basictabs.module.scss';
@@ -6,12 +6,14 @@ import styles from './basictabs.module.scss';
 export default function BasicTabs({
 	children,
 	tabNames,
+	style = {},
 }: {
 	children: ReactNode;
 	tabNames: Array<string>;
+	style?: CSSProperties;
 }) {
 	return (
-		<Tabs className={styles['tabs']}>
+		<Tabs className={styles['tabs']} style={style}>
 			<TabList className={styles['tab-list']}>
 				{tabNames.map((name) => (
 					<Tab

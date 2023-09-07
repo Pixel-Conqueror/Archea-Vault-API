@@ -36,7 +36,7 @@ Route.group(() => {
 
 Route.group(() => {
 	Route.get('/admin', 'AdminController.index');
-});
+}).middleware(['auth', 'admin']);
 
 // Monitoring
 Route.get('/health', async ({ response }) => {

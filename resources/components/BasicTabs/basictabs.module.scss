@@ -2,6 +2,15 @@
 
 .tabs {
 	-webkit-tap-highlight-color: transparent;
+	display: flex;
+	gap: 1em;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+
+	& > * {
+		width: 100%;
+	}
 
 	& .tab-list {
 		border-bottom: 1px solid $purple;

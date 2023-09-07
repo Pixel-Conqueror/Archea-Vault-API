@@ -15,14 +15,19 @@ export default class AdminController {
 
 	public async index({ inertia }: HttpContextContract) {
 		const users = await this.userController.getUsers();
-		const usersCount = users.length;
-		const totalUsersStorage = users.reduce((acc, user) => (acc += user.storageCapacity), 0);
-		const averageStorageTotal = (totalUsersStorage / usersCount).toFixed(2);
+
+		const totalUsers = users.length;
+		const newClients = await this.userController.getTotalUsersCreatedToday();
+		const totalUsersStorage = users.reduce((acc, user) => (acc += Number(user.storageCapacity)), 0);
+		const averageStorageTotal = totalUsersStorage / totalUsers;
+
 		const stats = {
-			usersCount,
+			totalUsers,
+			newClients,
 			totalUsersStorage,
 			averageStorageTotal,
 		};
+
 		return inertia.render('AdminDashboard', {
 			users,
 			healthy: await HealthCheck.getReport(),
