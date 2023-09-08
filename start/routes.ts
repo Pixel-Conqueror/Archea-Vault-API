@@ -31,6 +31,7 @@ Route.group(() => {
 	//Folders
 	Route.post('/folderCreate', 'FolderController.create');
 	Route.patch('/folderUpdate', 'FolderController.update');
+	Route.delete('/folderDelete', 'FolderController.delete');
 }).middleware('auth');
 
 Route.group(() => {
