@@ -15,7 +15,6 @@ Route.post('/stripe_hook', 'BillingController.stripeHook');
 
 // Files
 Route.group(() => {
-	Route.inertia('/cloud-space', 'CloudSpace');
 	Route.get('/profile', 'UserController.profile');
 	Route.get('/logout', 'AuthController.logout');
 
@@ -23,7 +22,7 @@ Route.group(() => {
 	Route.get('/buy-storage', 'BillingController.checkout');
 	Route.get('/invoices', 'BillingController.userInvoices');
 
-	Route.get('/filesList', 'FileController.index');
+	Route.get('/cloud-space', 'FileController.index');
 	Route.post('/fileUpload', 'FileController.uploadFile').middleware('storageCapacity');
 	Route.get('/fileDownload/:fileId', 'FileController.downloadFile');
 	Route.patch('/fileUpdate', 'FileController.updateFile').middleware('fileAccess');

@@ -1,15 +1,16 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import Bull from '@ioc:Rocketseat/Bull';
+// import Redis from '@ioc:Adonis/Addons/Redis';
 import Drive from '@ioc:Adonis/Core/Drive';
-import File from 'App/Models/File';
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import Logger from '@ioc:Adonis/Core/Logger';
+import Bull from '@ioc:Rocketseat/Bull';
 import UploadFile from 'App/Jobs/UploadFile';
-import FileUpdateValidator from 'App/Validators/FileUpdateValidator';
-import fs from 'fs-extra';
-import path from 'path';
-import { join } from 'path';
+import File from 'App/Models/File';
 import Folder from 'App/Models/Folder';
-import Redis from '@ioc:Adonis/Addons/Redis';
+import User from 'App/Models/User';
+import FileUpdateValidator from 'App/Validators/FileUpdateValidator';
 import UploadFileValidator from 'App/Validators/UploadFileValidator';
+import fs from 'fs-extra';
+import path, { join } from 'path';
 import Database from '@ioc:Adonis/Lucid/Database';
 import UserController from '@ioc:Archea/UserController';
 import ConvertSizes from 'App/Helpers/ConvertSizes';
@@ -29,28 +30,31 @@ export default class FileController implements FileInterface {
 		this.ConvertSizes = await new ConvertSizes();
 	}
 
-	public async index({ auth, response }: HttpContextContract) {
-		const userId = auth.user?.id;
-		if (!userId) {
-			return response.status(401).json({ error: 'User not authenticated' });
-		}
+	public async index({ auth, inertia }: HttpContextContract) {
+		const folder = await this.getFilesFromUser(auth.user!);
+		console.log(folder);
+		return inertia.render('CloudSpace', { folder });
+	}
 
+	public async getFilesFromUser(user: User) {
 		try {
-			const redisKey = `folderStructure:${userId}`;
+			// const redisKey = `folderStructure:${user.id}`;
 
-			const folderStructureFromRedis = await Redis.get(redisKey);
-			if (folderStructureFromRedis) {
-				return response.ok(JSON.parse(folderStructureFromRedis));
-			}
+			// const folderStructureFromRedis = await Redis.get(redisKey);
+			// if (folderStructureFromRedis) {
+			// 	return JSON.parse(folderStructureFromRedis);
+			// }
 
-			const rootPath = `tmp/uploads/${userId}`;
+			const rootPath = `tmp/uploads/${user.id}`;
 			const folderStructure = await this.buildFolderStructure(rootPath);
 			await this.enrichFolderStructureWithDBData(folderStructure);
-			await Redis.setex(redisKey, 86400, JSON.stringify(folderStructure));
+			console.log(folderStructure);
+			// await Redis.setex(redisKey, 86400, JSON.stringify(folderStructure));
 
-			return response.status(200).json(folderStructure);
+			return folderStructure;
 		} catch (error) {
-			return response.status(500).json({ error: error });
+			Logger.info(`[${user.email}] Files folder does not exist`);
+			return [];
 		}
 	}
 
@@ -213,6 +217,7 @@ export default class FileController implements FileInterface {
 				}
 			}
 		}
+
 		for (const folder of folderStructure.children) {
 			if (folder.type === 'folder') {
 				const folderId = folder.id;

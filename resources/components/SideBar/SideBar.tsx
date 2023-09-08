@@ -1,5 +1,11 @@
 import { Link, usePage } from '@inertiajs/inertia-react';
-import { AiFillClockCircle, AiFillCloud, AiFillHeart, AiFillHome } from 'react-icons/ai';
+import {
+	AiFillClockCircle,
+	AiFillCloud,
+	AiFillHeart,
+	AiFillHome,
+	AiOutlineLink,
+} from 'react-icons/ai';
 import { CiLogout } from 'react-icons/ci';
 import { FaUserAlt } from 'react-icons/fa';
 import { TbTrashFilled } from 'react-icons/tb';
@@ -90,7 +96,9 @@ function SpaceStorageUsed() {
 				flexDirection: 'column',
 			}}
 		>
-			<a href="/buy-storage">Increase your storage capacity (20€)</a>
+			<a href="/buy-storage" style={{ display: 'flex', gap: '.25em', alignItems: 'center' }}>
+				<AiOutlineLink /> Increase your storage capacity
+			</a>
 			<progress id="file" max={maxStorageCapacity} value={FAKE_STORAGE_USED}>
 				70%
 			</progress>
