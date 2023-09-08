@@ -1,3 +1,4 @@
+import Mail from '@ioc:Adonis/Addons/Mail';
 import Drive from '@ioc:Adonis/Core/Drive';
 import Env from '@ioc:Adonis/Core/Env';
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
@@ -36,6 +37,19 @@ export default class BillingController implements BillingInterface {
 
 		const user = await this.userController.addStorage(customer.email!);
 		Logger.info(`storage purchase validated: ${customer.email}`);
+
+		const { hosted_invoice_url: hostedInvoiceUrl } =
+			await this.stripeController.getInvoiceById(invoiceId);
+
+		await Mail.send((message) => {
+			message
+				.from(`${Env.get('MAIL_FROM')}`)
+				.to(user.email)
+				.subject('Successful purchase !')
+				.htmlView('emails/success_purchase', {
+					url: `${hostedInvoiceUrl}`,
+				});
+		});
 
 		await this.downloadInvoiceById(invoiceId, user);
 		Logger.info(`invoice ${invoiceId} downloaded`);
