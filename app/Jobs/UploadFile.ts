@@ -43,7 +43,6 @@ export default class UploadFile implements JobContract {
 					throw new Error("Le chemin du fichier n'a pas été défini.");
 				}
 
-				Logger.info(`Path = ${filePath}`);
 				const buffer = await fs.readFile(tmpPath);
 				await Drive.put(filePath, buffer);
 

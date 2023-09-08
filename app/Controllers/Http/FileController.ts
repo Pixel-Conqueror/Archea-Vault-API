@@ -10,8 +10,24 @@ import { join } from 'path';
 import Folder from 'App/Models/Folder';
 import Redis from '@ioc:Adonis/Addons/Redis';
 import UploadFileValidator from 'App/Validators/UploadFileValidator';
+import Database from '@ioc:Adonis/Lucid/Database';
+import UserController from '@ioc:Archea/UserController';
+import ConvertSizes from 'App/Helpers/ConvertSizes';
+import dayjs from 'dayjs';
 
 export default class FileController {
+	private userController;
+	private ConvertSizes;
+
+	constructor() {
+		this.init();
+	}
+
+	protected async init() {
+		this.userController = await UserController;
+		this.ConvertSizes = await new ConvertSizes();
+	}
+
 	public async index({ auth, response }: HttpContextContract) {
 		const userId = auth.user?.id;
 		if (!userId) {
@@ -124,6 +140,30 @@ export default class FileController {
 		}
 	}
 
+	protected async calculateFileStatistics(): Promise<any> {
+		const totalFiles = await Database.from('files').count('* as totalCount');
+		const totalUsers = await this.userController.getUsersCount();
+		const averageFilesPerUser = totalFiles[0].totalCount / totalUsers;
+		const filesUploadedToday = await Database.from('files')
+			.where('created_at', '>', dayjs().subtract(1, 'day').format('YYYY-MM-DD'))
+			.count('* as totalTodayUploads');
+		const totalSizeInBytes = await Database.from('files').sum('size as totalSizeInBytes');
+
+		const totalSizeInGB = this.ConvertSizes.convertBytes(totalSizeInBytes[0].totalSizeInBytes);
+		const averageSizePerUserInBytes = totalSizeInBytes[0].totalSizeInBytes / totalUsers;
+		const averageSizePerUser = totalSizeInGB[0] / totalUsers;
+
+		return {
+			totalFiles: totalFiles[0].totalCount,
+			averageFilesPerUser: averageFilesPerUser,
+			filesUploadedToday: filesUploadedToday[0].totalTodayUploads,
+			totalSizeInBytes: totalSizeInBytes[0].totalSizeInBytes,
+			totalSize: `${totalSizeInGB[0]} ${totalSizeInGB[1]}`,
+			averageSizePerUserInBytes: averageSizePerUserInBytes,
+			averageSizePerUser: `${averageSizePerUser} ${totalSizeInGB[1]}`,
+		};
+	}
+
 	private async buildFolderStructure(folderPath: string): Promise<any> {
 		const folderId = path.basename(folderPath);
 		const folderStructure: any = {
@@ -156,6 +196,22 @@ export default class FileController {
 	}
 
 	private async enrichFolderStructureWithDBData(folderStructure: any): Promise<void> {
+		if (folderStructure.files.length > 0) {
+			for (const file of folderStructure.files) {
+				if (file.size) {
+					continue;
+				} else {
+					const fileId = file.id;
+					const fileData = await File.findOrFail(fileId);
+
+					file.name = fileData.name;
+					file.type = fileData.type;
+					file.size = fileData.size;
+					file.path = fileData.path;
+					file.createdAt = fileData.createdAt;
+				}
+			}
+		}
 		for (const folder of folderStructure.children) {
 			if (folder.type === 'folder') {
 				const folderId = folder.id;
