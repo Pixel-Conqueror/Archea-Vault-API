@@ -1,10 +1,8 @@
 import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
-import { ItemParams, useContextMenu } from 'react-contexify';
-import { BsFillGearFill, BsThreeDots } from 'react-icons/bs';
+import { BsFillGearFill, BsTrash } from 'react-icons/bs';
 
 import BasicTable from 'Components/BasicTable';
-import ContextMenu from 'Components/ContextMenu/ContextMenu';
 import CreateFolder from 'Components/CreateFolder/CreateFolder';
 import LargeLayout from 'Components/Layouts/LargeLayout';
 import SearchBar from 'Components/SearchBar/SearchBar';
@@ -16,7 +14,7 @@ import { calculSize, printDate } from 'Utils/index';
 
 import User from 'App/Models/User';
 import styles from 'Styles/cloudspace.module.scss';
-import { AiOutlineLink } from 'react-icons/ai';
+import { AiOutlineCloudDownload, AiOutlineLink } from 'react-icons/ai';
 
 interface TableItem {
 	id: string;
@@ -27,7 +25,6 @@ interface TableItem {
 }
 
 const usersColumnHelper = createColumnHelper<TableItem>();
-const MENU_ID = 'menu-id';
 
 export default function CloudSpace({
 	auth,
@@ -38,7 +35,6 @@ export default function CloudSpace({
 	folder: Folder;
 	totalUserStorage: number;
 }) {
-	console.log(folder);
 	const [currentFolder, setFolder] = useState<Folder>(folder);
 	const [folderIds, setFolderIds] = useState<Array<string>>([currentFolder.id]);
 
@@ -51,12 +47,14 @@ export default function CloudSpace({
 	};
 
 	// TODO: faire en sorte de récupérer le dossier à afficher (probablement fonction récursive)
-	const goPreviousFolder = () =>
-		setFolderIds((folders) => {
-			const copyFolders = [...folders];
-			copyFolders.splice(-1);
-			return copyFolders;
-		});
+	const goPreviousFolder = () => {
+		window.location.reload();
+		// setFolderIds((folders) => {
+		// 	const copyFolders = [...folders];
+		// 	copyFolders.splice(-1);
+		// 	return copyFolders;
+		// });
+	};
 
 	if (auth.user.storageCapacity === 0 || totalUserStorage >= auth.user.storageCapacity) {
 		return (
@@ -76,8 +74,10 @@ export default function CloudSpace({
 			<div className={styles['vue-manager']}>
 				<h2>Storage space</h2>
 				<div className={styles['options']}>
-					<CreateFolder parentFolderId={currentFolder.id} />
-					{<UploadFiles />}
+					<CreateFolder
+						parentFolderId={currentFolder.id !== folder.id ? currentFolder.id : undefined}
+					/>
+					{<UploadFiles folderId={currentFolder.id !== folder.id ? currentFolder.id : undefined} />}
 				</div>
 			</div>
 			<BreadCrumb paths={folderIds} onBack={goPreviousFolder} />
@@ -104,6 +104,23 @@ function ShowItems({
 		if (row.original.type !== 'folder') return;
 		addFolderId(row.original.id);
 	};
+
+	const downloadFile = (fileId: string) => window.open(`/fileDownload/${fileId}`, '_blank');
+
+	const deleteItem = (id: string, type: 'file' | 'folder') => {
+		const itemType = type.toLowerCase();
+		console.log(itemType);
+		if (confirm('Delete ?')) {
+			fetch(itemType !== 'folder' ? '/fileDelete' : '/folderDelete', {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: 'delete',
+				body: JSON.stringify(itemType !== 'folder' ? { fileId: id } : { folderId: id }),
+			}).then(() => window.location.reload());
+		}
+	};
+
 	const filesTable = useReactTable({
 		data: items,
 		columns: [
@@ -124,7 +141,12 @@ function ShowItems({
 			}),
 			usersColumnHelper.accessor('name', {
 				header: () => <BsFillGearFill />,
-				cell: ({ row }) => <MenuDropdown item={row.original} />,
+				cell: ({ row }) => (
+					<div style={{ display: 'flex', alignItems: 'center', gap: '.25em' }}>
+						<AiOutlineCloudDownload onClick={() => downloadFile(row.original.id)} />
+						<BsTrash onClick={() => deleteItem(row.original.id, row.original.type)} />
+					</div>
+				),
 			}),
 		],
 		getCoreRowModel: getCoreRowModel(),
@@ -133,7 +155,6 @@ function ShowItems({
 }
 
 function createTableItems(folders, files) {
-	console.log('folders', folders, 'files', files);
 	return [
 		folders.map(({ id, name, type, size = 0, createdAt }) => ({
 			id,
@@ -157,31 +178,5 @@ function BreadCrumb({ paths = [], onBack }: { paths: string[]; onBack: () => voi
 				</>
 			)}
 		</p>
-	);
-}
-
-function MenuDropdown({ item }: { item: TableItem }) {
-	const { show } = useContextMenu({
-		id: MENU_ID,
-	});
-	const handleSettings = (event) => show({ event });
-
-	const handleItemClick = ({ id, event, props }: ItemParams) => {
-		switch (id) {
-			case 'copy':
-				console.log(event, props);
-				break;
-			case 'cut':
-				console.log(event, props);
-				break;
-			//etc...
-		}
-	};
-
-	return (
-		<>
-			<BsThreeDots onClick={handleSettings} />
-			<ContextMenu menuId={item.id} onItemClick={handleItemClick} />
-		</>
 	);
 }

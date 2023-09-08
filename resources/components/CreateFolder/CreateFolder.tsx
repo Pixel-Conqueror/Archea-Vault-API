@@ -1,7 +1,6 @@
 import { useForm } from '@inertiajs/inertia-react';
 import Modal from 'Components/Modal/Modal';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
 
 export default function CreateFolder({ parentFolderId }: { parentFolderId?: string }) {
 	const { data, setData, post } = useForm({ name: '', parentId: parentFolderId });
@@ -13,7 +12,10 @@ export default function CreateFolder({ parentFolderId }: { parentFolderId?: stri
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		post('/folderCreate', {
-			onFinish: () => toast('Folder creatd'),
+			onFinish: () => {
+				alert('Folder created');
+				window.location.reload();
+			},
 		});
 	};
 

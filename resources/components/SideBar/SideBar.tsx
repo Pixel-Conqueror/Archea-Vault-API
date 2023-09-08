@@ -86,7 +86,6 @@ export default function CloudSideBar({ showSpaceStorage = true }: { showSpaceSto
 function SpaceStorageUsed() {
 	const { auth, totalUserStorage } = usePage<any>().props;
 	const maxStorageCapacity = Number(auth.user!.storageCapacity);
-	console.log(totalUserStorage, maxStorageCapacity);
 
 	return (
 		<div
