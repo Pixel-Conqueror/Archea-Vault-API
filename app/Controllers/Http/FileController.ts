@@ -14,10 +14,9 @@ import Database from '@ioc:Adonis/Lucid/Database';
 import UserController from '@ioc:Archea/UserController';
 import ConvertSizes from 'App/Helpers/ConvertSizes';
 import dayjs from 'dayjs';
-import FileInterface from 'Contracts/interfaces/File.interface';
 
-export default class FileController implements FileInterface {
-	private userController: typeof UserController;
+export default class FileController {
+	private userController;
 	private ConvertSizes;
 
 	constructor() {
@@ -70,11 +69,10 @@ export default class FileController implements FileInterface {
 
 	public async uploadFile({ request, auth, response }: HttpContextContract) {
 		try {
-			const userId = 'e88fdf30-6b3a-48e3-b218-389d216f0ee2';
-			// const userId = auth.user?.id;
-			// if (!userId) {
-			// 	return response.status(401).json({ error: 'User not authenticated' });
-			// }
+			const userId = auth.user?.id;
+			if (!userId) {
+				return response.status(401).json({ error: 'User not authenticated' });
+			}
 
 			const { folderId } = await request.validate(UploadFileValidator);
 			const files = request.files('files');
@@ -152,13 +150,16 @@ export default class FileController implements FileInterface {
 		const totalSizeInBytes = await Database.from('files').sum('size as totalSizeInBytes');
 
 		const totalSizeInGB = this.ConvertSizes.convertBytes(totalSizeInBytes[0].totalSizeInBytes);
+		const averageSizePerUserInBytes = totalSizeInBytes[0].totalSizeInBytes / totalUsers;
 		const averageSizePerUser = totalSizeInGB[0] / totalUsers;
 
 		return {
 			totalFiles: totalFiles[0].totalCount,
 			averageFilesPerUser: averageFilesPerUser,
 			filesUploadedToday: filesUploadedToday[0].totalTodayUploads,
+			totalSizeInBytes: totalSizeInBytes[0].totalSizeInBytes,
 			totalSize: `${totalSizeInGB[0]} ${totalSizeInGB[1]}`,
+			averageSizePerUserInBytes: averageSizePerUserInBytes,
 			averageSizePerUser: `${averageSizePerUser} ${totalSizeInGB[1]}`,
 		};
 	}

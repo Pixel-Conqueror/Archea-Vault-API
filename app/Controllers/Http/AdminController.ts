@@ -3,7 +3,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import UserController from '@ioc:Archea/UserController';
 
 export default class AdminController {
-	private userController: typeof UserController;
+	private userController;
 
 	constructor() {
 		this.init();
@@ -18,8 +18,9 @@ export default class AdminController {
 
 		const totalUsers = users;
 		const newClients = await this.userController.getTotalUsersCreatedToday();
-		const totalUsersStorage = users.reduce((acc, user) => (acc += Number(user.storageCapacity)), 0);
+		const totalUsersStorage = await this.userController.getTotalStorageCapacity();
 		const averageStorageTotal = totalUsersStorage / totalUsers;
+		const filesStats = await this.fileController.calculateFileStatistics();
 
 		const stats = {
 			totalUsers,

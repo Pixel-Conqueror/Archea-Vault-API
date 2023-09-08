@@ -61,6 +61,7 @@ export default class UserController implements UserInterface {
 		);
 
 		return {
+			totalStorageCapacityInBytes: totalStorageCapacityInBytes[0].totalStorageCapacityInBytes,
 			totalStorageCapacity: totalStorageCapacityInGB,
 		};
 	}
