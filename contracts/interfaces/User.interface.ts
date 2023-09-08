@@ -4,6 +4,6 @@ import User from 'App/Models/User';
 export default interface UserInterface {
 	profile(ctx: HttpContextContract): void;
 	addStorage(email: string, amount?: number): Promise<User>;
-	getUsers(): Promise<Array<User>>;
+	getUsersCount(): Promise<number>;
 	getTotalUsersCreatedToday(): Promise<number>;
 }

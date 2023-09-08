@@ -14,9 +14,9 @@ export default class AdminController {
 	}
 
 	public async index({ inertia }: HttpContextContract) {
-		const users = await this.userController.getUsers();
+		const users: number = await this.userController.getUsersCount();
 
-		const totalUsers = users.length;
+		const totalUsers = users;
 		const newClients = await this.userController.getTotalUsersCreatedToday();
 		const totalUsersStorage = users.reduce((acc, user) => (acc += Number(user.storageCapacity)), 0);
 		const averageStorageTotal = totalUsersStorage / totalUsers;
