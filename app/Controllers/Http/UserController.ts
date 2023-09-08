@@ -5,6 +5,8 @@ import User from 'App/Models/User';
 import UserInterface from 'Contracts/interfaces/User.interface';
 import dayjs from 'dayjs';
 import ConvertSizes from 'App/Helpers/ConvertSizes';
+import Mail from '@ioc:Adonis/Addons/Mail';
+import Env from '@ioc:Adonis/Core/Env';
 
 const MAX_STORAGE_IN_BYTES = 1024 * 1024 * 1024 * 20;
 
@@ -36,6 +38,42 @@ export default class UserController implements UserInterface {
 				storageCapacity: Number(storageCapacity) + amount,
 			}
 		);
+	}
+
+	public async deleteUserDatas({ auth, response, inertia }: HttpContextContract) {
+		const userId = auth.user?.id;
+		const user = await User.findOrFail(userId);
+		if (!user) {
+			return response.badRequest('User not found');
+		}
+
+		const userFiles = await Database.from('files').where('user_id', user.id).count('* as total');
+
+		await user.delete();
+
+		await Mail.send((message) => {
+			message
+				.from(`${Env.get('MAIL_FROM')}`)
+				.to(user.email)
+				.subject('Account Deleted !')
+				.htmlView('emails/delete_user', {
+					fullName: user.fullName,
+				});
+		});
+
+		await Mail.send((message) => {
+			message
+				.from(`${Env.get('MAIL_FROM')}`)
+				.to(`${Env.get('MAIL_FROM')}`)
+				.subject('An user has left us !')
+				.htmlView('emails/deleted_user', {
+					fullName: user.fullName,
+					email: user.email,
+					filesCount: userFiles[0].total,
+				});
+		});
+
+		inertia.render('/login', { success: 'Your account has been deleted' });
 	}
 
 	protected async getUsersCount() {

@@ -37,4 +37,9 @@ export default Env.rules({
 	STRIPE_PUBLIC_KEY: Env.schema.string(),
 	STRIPE_API_VERSION: Env.schema.string(),
 	STRIPE_WEBHOOK_SECRET: Env.schema.string(),
+	MAIL_FROM: Env.schema.string(),
+	SMTP_HOST: Env.schema.string(),
+	SMTP_PORT: Env.schema.number(),
+	SMTP_USERNAME: Env.schema.string(),
+	SMTP_PASSWORD: Env.schema.string(),
 });
