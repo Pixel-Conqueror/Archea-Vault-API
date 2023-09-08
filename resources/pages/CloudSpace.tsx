@@ -56,7 +56,15 @@ export default function CloudSpace({
 		// });
 	};
 
-	if (auth.user.storageCapacity === 0 || totalUserStorage >= auth.user.storageCapacity) {
+	console.log(
+		totalUserStorage,
+		auth.user.storageCapacity,
+		totalUserStorage >= auth.user.storageCapacity
+	);
+	if (
+		Number(auth.user.storageCapacity) === 0 ||
+		Number(totalUserStorage) >= Number(auth.user.storageCapacity)
+	) {
 		return (
 			<LargeLayout>
 				<a href="/buy-storage" style={{ display: 'flex', gap: '.25em', alignItems: 'center' }}>

@@ -33,6 +33,7 @@ export default class FileController implements FileInterface {
 	public async index({ auth, inertia }: HttpContextContract) {
 		const folder = await this.getFilesFromUser(auth.user!);
 		const totalUserStorage = await this.getTotalUserStorage(auth.user!);
+		console.log('totalUserStorage', totalUserStorage);
 		return inertia.render('CloudSpace', { folder, totalUserStorage });
 	}
 
@@ -151,9 +152,7 @@ export default class FileController implements FileInterface {
 	}
 
 	public async getTotalUserStorage(user: User) {
-		const files = await Database.from('files').where('id', user.id!);
-		console.log(files.length);
-		return (await Database.from('files').where('id', user.id!).sum('size'))?.[0].sum;
+		return (await Database.from('files').where('user_id', user.id!).sum('size'))?.[0].sum;
 	}
 
 	protected async calculateFileStatistics(): Promise<any> {
