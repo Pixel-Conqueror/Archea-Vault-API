@@ -21,5 +21,32 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=a12345678
     image: dpage/pgadmin4:latest
 
+  redis:
+    container_name: redis
+    image: redis:latest
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - redis_volume:/data
+    ports:
+      - 6379:6379
+
+  bullboard:
+    container_name: bullboard
+    image: deadly0/bull-board
+    restart: always
+    ports:
+      - 3000:3000
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_USE_TLS=false
+      - BULL_PREFIX=bull
+    depends_on:
+      - redis
+
 volumes:
   postgres_volume:
+  redis_volume:

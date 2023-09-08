@@ -5,7 +5,7 @@ import styles from './navbar.module.scss';
 export default function Navbar() {
 	const { auth } = usePage<InertiaPage>().props;
 	const isAdmin = auth.user?.role === 1;
-	console.log(auth.user);
+
 	return (
 		<nav className={styles['navbar']}>
 			<ul className={styles['block']}>

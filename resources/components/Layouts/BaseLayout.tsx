@@ -1,4 +1,5 @@
 import { CSSProperties, ReactNode } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 import Navbar from 'Components/Navbar/Navbar';
 
@@ -16,13 +17,6 @@ export default function BaseLayout({
 	return (
 		<div
 			className={className}
-			// initial={{ opacity: 0, scale: 0.95 }}
-			// animate={{ opacity: 1, scale: 1 }}
-			// transition={{
-			// 	type: 'spring',
-			// 	stiffness: 260,
-			// 	damping: 20,
-			// }}
 			style={{
 				...style,
 				width: '100%',
@@ -31,6 +25,7 @@ export default function BaseLayout({
 		>
 			<Navbar />
 			<main className={childrenClassName}>{children}</main>
+			<ToastContainer />
 		</div>
 	);
 }
