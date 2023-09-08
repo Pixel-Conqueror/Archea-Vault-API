@@ -17,6 +17,10 @@ export default class AppProvider {
 			const StripesController = (await import('../app/Controllers/Http/StripeController')).default;
 			return new StripesController();
 		});
+		this.app.container.singleton('Archea/FileController', async () => {
+			const FileController = (await import('../app/Controllers/Http/FileController')).default;
+			return new FileController();
+		});
 	}
 
 	public async boot() {

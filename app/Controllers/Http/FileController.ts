@@ -14,8 +14,9 @@ import Database from '@ioc:Adonis/Lucid/Database';
 import UserController from '@ioc:Archea/UserController';
 import ConvertSizes from 'App/Helpers/ConvertSizes';
 import dayjs from 'dayjs';
+import FileInterface from 'Contracts/interfaces/File.interface';
 
-export default class FileController {
+export default class FileController implements FileInterface {
 	private userController;
 	private ConvertSizes;
 
