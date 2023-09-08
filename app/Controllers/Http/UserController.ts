@@ -78,8 +78,6 @@ export default class UserController implements UserInterface {
 
 	protected async getUsersCount() {
 		const users = await Database.from('users').count('* as total');
-
-		console.log(users[0].total, typeof users[0].total);
 		return users[0].total;
 	}
 

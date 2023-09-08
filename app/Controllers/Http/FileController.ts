@@ -1,20 +1,21 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import Bull from '@ioc:Rocketseat/Bull';
+// import Redis from '@ioc:Adonis/Addons/Redis';
 import Drive from '@ioc:Adonis/Core/Drive';
-import File from 'App/Models/File';
-import UploadFile from 'App/Jobs/UploadFile';
-import FileUpdateValidator from 'App/Validators/FileUpdateValidator';
-import fs from 'fs-extra';
-import path from 'path';
-import { join } from 'path';
-import Folder from 'App/Models/Folder';
-import Redis from '@ioc:Adonis/Addons/Redis';
-import UploadFileValidator from 'App/Validators/UploadFileValidator';
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import Logger from '@ioc:Adonis/Core/Logger';
 import Database from '@ioc:Adonis/Lucid/Database';
 import UserController from '@ioc:Archea/UserController';
+import Bull from '@ioc:Rocketseat/Bull';
 import ConvertSizes from 'App/Helpers/ConvertSizes';
-import dayjs from 'dayjs';
+import UploadFile from 'App/Jobs/UploadFile';
+import File from 'App/Models/File';
+import Folder from 'App/Models/Folder';
+import User from 'App/Models/User';
+import FileUpdateValidator from 'App/Validators/FileUpdateValidator';
+import UploadFileValidator from 'App/Validators/UploadFileValidator';
 import FileInterface from 'Contracts/interfaces/File.interface';
+import dayjs from 'dayjs';
+import fs from 'fs-extra';
+import path, { join } from 'path';
 
 export default class FileController implements FileInterface {
 	private userController;
@@ -29,28 +30,31 @@ export default class FileController implements FileInterface {
 		this.ConvertSizes = await new ConvertSizes();
 	}
 
-	public async index({ auth, response }: HttpContextContract) {
-		const userId = auth.user?.id;
-		if (!userId) {
-			return response.status(401).json({ error: 'User not authenticated' });
-		}
+	public async index({ auth, inertia }: HttpContextContract) {
+		const folder = await this.getFilesFromUser(auth.user!);
+		const totalUserStorage = await this.getTotalUserStorage(auth.user!);
+		console.log('totalUserStorage', totalUserStorage);
+		return inertia.render('CloudSpace', { folder, totalUserStorage });
+	}
 
+	public async getFilesFromUser(user: User) {
 		try {
-			const redisKey = `folderStructure:${userId}`;
+			// const redisKey = `folderStructure:${user.id}`;
 
-			const folderStructureFromRedis = await Redis.get(redisKey);
-			if (folderStructureFromRedis) {
-				return response.ok(JSON.parse(folderStructureFromRedis));
-			}
+			// const folderStructureFromRedis = await Redis.get(redisKey);
+			// if (folderStructureFromRedis) {
+			// 	return JSON.parse(folderStructureFromRedis);
+			// }
 
-			const rootPath = `tmp/uploads/${userId}`;
+			const rootPath = `tmp/uploads/${user.id}`;
 			const folderStructure = await this.buildFolderStructure(rootPath);
 			await this.enrichFolderStructureWithDBData(folderStructure);
-			await Redis.setex(redisKey, 86400, JSON.stringify(folderStructure));
+			// await Redis.setex(redisKey, 86400, JSON.stringify(folderStructure));
 
-			return response.status(200).json(folderStructure);
+			return folderStructure;
 		} catch (error) {
-			return response.status(500).json({ error: error });
+			Logger.info(`[${user.email}] Files folder does not exist`);
+			return [];
 		}
 	}
 
@@ -75,9 +79,15 @@ export default class FileController implements FileInterface {
 				return response.status(401).json({ error: 'User not authenticated' });
 			}
 
-			const { folderId } = await request.validate(UploadFileValidator);
 			const files = request.files('files');
+			if (files.length === 0) {
+				return response.status(401).json({
+					error: 'No file uploaded',
+				});
+			}
+			const { folderId } = await request.validate(UploadFileValidator);
 
+			console.log('là folder', folderId);
 			const filesDatas = files.map((file: any) => ({
 				userId: userId,
 				file: file,
@@ -110,7 +120,7 @@ export default class FileController implements FileInterface {
 	public async downloadFile({ auth, request, response }: HttpContextContract) {
 		try {
 			const userId = auth.user?.id;
-			const { fileId } = request.body();
+			const { fileId } = request.params();
 
 			const file = await File.findOrFail(fileId);
 			if (file.userId !== userId) {
@@ -139,6 +149,10 @@ export default class FileController implements FileInterface {
 		} catch (error) {
 			return response.status(404).json({ message: 'Fichier non trouvé', error: error });
 		}
+	}
+
+	public async getTotalUserStorage(user: User) {
+		return (await Database.from('files').where('user_id', user.id!).sum('size'))?.[0].sum;
 	}
 
 	protected async calculateFileStatistics(): Promise<any> {
@@ -213,6 +227,7 @@ export default class FileController implements FileInterface {
 				}
 			}
 		}
+
 		for (const folder of folderStructure.children) {
 			if (folder.type === 'folder') {
 				const folderId = folder.id;
