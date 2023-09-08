@@ -1,7 +1,7 @@
 import HealthCheck from '@ioc:Adonis/Core/HealthCheck';
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import UserController from '@ioc:Archea/UserController';
 import FileController from '@ioc:Archea/FileController';
+import UserController from '@ioc:Archea/UserController';
 
 export default class AdminController {
 	private userController;
@@ -17,20 +17,17 @@ export default class AdminController {
 	}
 
 	public async index({ inertia }: HttpContextContract) {
-		const users: number = await this.userController.getUsersCount();
+		const users: number = await this.userController.getUsers();
+		const usersCount: number = await this.userController.getUsersCount();
 
-		const totalUsers = users;
-		const newClients = await this.userController.getTotalUsersCreatedToday();
-		const totalUsersStorage = await this.userController.getTotalStorageCapacity();
-		const averageStorageTotal = totalUsersStorage / totalUsers;
+		const newClientsToday = await this.userController.getTotalUsersCreatedToday();
 		const filesStats = await this.fileController.calculateFileStatistics();
 
 		const stats = {
-			totalUsers,
-			newClients,
-			totalUsersStorage,
-			averageStorageTotal,
-			files: filesStats,
+			users,
+			totalUsers: usersCount,
+			newClientsToday,
+			...filesStats,
 		};
 
 		return inertia.render('AdminDashboard', {

@@ -81,6 +81,10 @@ export default class UserController implements UserInterface {
 		return users[0].total;
 	}
 
+	protected async getUsers() {
+		return await User.all();
+	}
+
 	protected async getTotalUsersCreatedToday() {
 		const yersterday = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
 		const users = await Database.from('users').where('created_at', '>', yersterday);

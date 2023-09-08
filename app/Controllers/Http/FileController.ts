@@ -87,7 +87,6 @@ export default class FileController implements FileInterface {
 			}
 			const { folderId } = await request.validate(UploadFileValidator);
 
-			console.log('là folder', folderId);
 			const filesDatas = files.map((file: any) => ({
 				userId: userId,
 				file: file,

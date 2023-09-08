@@ -18,9 +18,14 @@ interface AdminDashboardProps {
 	healthy: HealthReport;
 	stats: {
 		totalUsers: number;
-		newClients: number;
-		totalUsersStorage: number;
-		averageStorageTotal: number;
+		newClientsToday: number;
+		totalFiles: number;
+		averageFilesPerUser: number;
+		filesUploadedToday: number;
+		totalSizeInBytes: number;
+		totalSize: number;
+		averageSizePerUserInBytes: number;
+		averageSizePerUser: number;
 	};
 }
 export default function AdminDashboard({
@@ -62,25 +67,35 @@ export default function AdminDashboard({
 			childrenStyle={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}
 		>
 			<h1 style={{ marginBottom: '1em' }}>Dashboard Admin</h1>
-			<BasicTabs tabNames={['Stats', 'Users', 'Files']} style={{ gap: '1em' }}>
+			<BasicTabs tabNames={['Stats', 'Users']} style={{ gap: '1em' }}>
 				<AdminStats stats={stats} healthy={healthy} />
 				<BasicTable table={usersTable} />
-				<>Files</>
 			</BasicTabs>
 		</LargeLayout>
 	);
 }
 
 function AdminStats({ stats, healthy }: Omit<AdminDashboardProps, 'users'>) {
-	const { totalUsersStorage, newClients, averageStorageTotal, totalUsers } = stats;
+	const {
+		averageFilesPerUser,
+		averageSizePerUserInBytes,
+		filesUploadedToday,
+		newClientsToday,
+		totalFiles,
+		totalSizeInBytes,
+		totalUsers,
+	} = stats;
 
 	return (
 		<div className={styles['stats-panel']}>
 			<ul className={styles['stats-list']}>
 				<StatsItem label={`${totalUsers}\r\nclients`} legend="total" />
-				<StatsItem label={`${newClients} new\r\nclients`} legend="today" />
-				<StatsItem label={`${calculSize(averageStorageTotal)} files / client`} />
-				<StatsItem label={`${calculSize(totalUsersStorage)} users\r\nstorage`} legend="total" />
+				<StatsItem label={`${newClientsToday} new\r\nclients`} legend="today" />
+				<StatsItem label={`${totalFiles} files\r\nuploaded`} legend="total" />
+				<StatsItem label={`${averageFilesPerUser} files / client`} />
+				<StatsItem label={`${filesUploadedToday} files\r\nuploaded`} legend="today" />
+				<StatsItem label={`${calculSize(totalSizeInBytes)} total\r\nstorage`} legend="total" />
+				<StatsItem label={`${calculSize(averageSizePerUserInBytes)} used / client`} />
 			</ul>
 			<ServicesHealthCheck healthy={healthy} />
 		</div>
