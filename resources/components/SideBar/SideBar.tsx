@@ -8,14 +8,12 @@ import {
 } from 'react-icons/ai';
 import { CiLogout } from 'react-icons/ci';
 import { FaUserAlt } from 'react-icons/fa';
-import { TbTrashFilled } from 'react-icons/tb';
 import { MdAdminPanelSettings } from 'react-icons/md';
+import { TbTrashFilled } from 'react-icons/tb';
 
 import { InertiaPage } from 'Types/inertia';
 import { calculSize } from 'Utils/index';
 import styles from './sidebar.module.scss';
-
-const FAKE_STORAGE_USED = 1000 * 1000 * 1000 * 17.56;
 
 export default function CloudSideBar({ showSpaceStorage = true }: { showSpaceStorage?: boolean }) {
 	const { auth } = usePage<InertiaPage>().props;
@@ -86,8 +84,9 @@ export default function CloudSideBar({ showSpaceStorage = true }: { showSpaceSto
 }
 
 function SpaceStorageUsed() {
-	const { auth } = usePage<InertiaPage>().props;
+	const { auth, totalUserStorage } = usePage<any>().props;
 	const maxStorageCapacity = Number(auth.user!.storageCapacity);
+	console.log(totalUserStorage, maxStorageCapacity);
 
 	return (
 		<div
@@ -99,15 +98,17 @@ function SpaceStorageUsed() {
 			<a href="/buy-storage" style={{ display: 'flex', gap: '.25em', alignItems: 'center' }}>
 				<AiOutlineLink /> Increase your storage capacity
 			</a>
-			<progress id="file" max={maxStorageCapacity} value={FAKE_STORAGE_USED}>
-				70%
-			</progress>
-			<div className="resume">
-				You're using
-				<br />
-				<span className="color">{calculSize(FAKE_STORAGE_USED)}</span> out of{' '}
-				{auth.user!.storageCapacityInGB} GB
-			</div>
+			{auth.user.storageCapacity > 0 && (
+				<>
+					<progress id="file" max={maxStorageCapacity} value={totalUserStorage} />
+					<div className="resume">
+						You're using
+						<br />
+						<span className="color">{calculSize(totalUserStorage)}</span> out of{' '}
+						{auth.user!.storageCapacityInGB} GB
+					</div>
+				</>
+			)}
 		</div>
 	);
 }

@@ -1,17 +1,20 @@
 import { useForm } from '@inertiajs/inertia-react';
+import { useEffect } from 'react';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { toast } from 'react-toastify';
 
 export default function UploadFiles() {
-	const { post } = useForm({
+	const { data, setData, post } = useForm({
 		files: [],
 	});
 
-	const handleFiles = (e) =>
+	useEffect(() => {
+		if (data.files.length === 0) return;
 		post('/fileUpload', {
-			onFinish: () => toast(`File(s) uploaded`),
-			data: e.target.files,
+			onFinish: () => alert(`File(s) uploaded`),
+			onError: console.error,
 		});
+	}, [data]);
+	const handleFiles = (e) => setData({ files: e.target.files });
 
 	return (
 		<>

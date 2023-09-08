@@ -1,28 +1,30 @@
-import { Menu, Item, Separator, Submenu, useContextMenu } from 'react-contexify';
+import { Item, ItemParams, Menu, Separator } from 'react-contexify';
+import { AiOutlineCloudDownload, AiOutlineInfoCircle } from 'react-icons/ai';
+import { BiEditAlt } from 'react-icons/bi';
+import { BsTrash } from 'react-icons/bs';
 
-const MENU_ID = 'menu-id';
-
-export default function ContextMenu() {
-	// 🔥 you can use this hook from everywhere. All you need is the menu id
-	const { show } = useContextMenu({
-		id: MENU_ID,
-	});
-
-	function handleItemClick({ event, props, triggerEvent, data }) {
-		console.log(event, props, triggerEvent, data);
-	}
-
+export default function ContextMenu({
+	menuId,
+	onItemClick,
+}: {
+	menuId: string;
+	onItemClick: (args: ItemParams) => void;
+}) {
 	return (
-		<Menu id={MENU_ID}>
-			<Item onClick={handleItemClick}>Item 1</Item>
-			<Item onClick={handleItemClick}>Item 2</Item>
+		<Menu id={menuId}>
+			<Item onClick={onItemClick}>
+				<AiOutlineCloudDownload /> Download
+			</Item>
+			<Item onClick={onItemClick}>
+				<AiOutlineInfoCircle /> Informations
+			</Item>
+			<Item onClick={onItemClick}>
+				<BiEditAlt /> Rename
+			</Item>
 			<Separator />
-			<Item disabled>Disabled</Item>
-			<Separator />
-			<Submenu label="Submenu">
-				<Item onClick={handleItemClick}>Sub Item 1</Item>
-				<Item onClick={handleItemClick}>Sub Item 2</Item>
-			</Submenu>
+			<Item onClick={onItemClick}>
+				<BsTrash /> Remove
+			</Item>
 		</Menu>
 	);
 }
