@@ -20,7 +20,7 @@ export default class AdminController {
 		const newClients = await this.userController.getTotalUsersCreatedToday();
 		const totalUsersStorage = await this.userController.getTotalStorageCapacity();
 		const averageStorageTotal = totalUsersStorage / totalUsers;
-		const filesStats = ((await this.fileController) as any).calculateFileStatistics();
+		//const filesStats = ((await this.fileController) as any).calculateFileStatistics();
 
 		const stats = {
 			totalUsers,

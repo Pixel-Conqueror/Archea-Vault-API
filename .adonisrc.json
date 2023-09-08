@@ -6,7 +6,8 @@
 		"@adonisjs/repl/build/commands",
 		"@adonisjs/lucid/build/commands",
 		"@rocketseat/adonis-bull/build/commands",
-		"@eidellev/inertia-adonisjs/build/commands"
+		"@eidellev/inertia-adonisjs/build/commands",
+		"@adonisjs/mail/build/commands"
 	],
 	"exceptionHandlerNamespace": "App/Exceptions/Handler",
 	"aliases": {
@@ -35,7 +36,8 @@
 		"@eidellev/inertia-adonisjs",
 		"@adonisjs/view",
 		"@adonisjs/session",
-		"@mezielabs/adonis-stripe"
+		"@mezielabs/adonis-stripe",
+		"@adonisjs/mail"
 	],
 	"aceProviders": [
 		"@adonisjs/repl"

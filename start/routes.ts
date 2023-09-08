@@ -6,6 +6,7 @@ Route.inertia('/', 'Home');
 // Authentication
 Route.inertia('/login', 'Login');
 Route.post('/login', 'AuthController.login');
+Route.get('/verify_email/:userId', 'AuthController.verifyEmail');
 
 Route.inertia('/register', 'Register');
 Route.post('/register', 'AuthController.register');
@@ -13,16 +14,20 @@ Route.post('/register', 'AuthController.register');
 // Route called by stripe whenever an event is triggered
 Route.post('/stripe_hook', 'BillingController.stripeHook');
 
+Route.delete('/delete_account', 'UserController.deleteUserDatas');
+
 // Files
 Route.group(() => {
 	Route.inertia('/cloud-space', 'CloudSpace');
 	Route.get('/profile', 'UserController.profile');
 	Route.get('/logout', 'AuthController.logout');
+	Route.delete('/delete_account', 'UserController.deleteUserDatas');
 
 	// Billing storage
 	Route.get('/buy-storage', 'BillingController.checkout');
 	Route.get('/invoices', 'BillingController.userInvoices');
 
+	//Files
 	Route.get('/filesList', 'FileController.index');
 	Route.post('/fileUpload', 'FileController.uploadFile').middleware('storageCapacity');
 	Route.get('/fileDownload/:fileId', 'FileController.downloadFile');
